@@ -4,11 +4,17 @@
            "test"   ; Clojure source files
            ; "target/java" ; compiled Java *.class files
            ]
+
  :deps    {
-           org.clojure/clojure {:mvn/version "1.12.0-beta1"}
-           prismatic/schema    {:mvn/version "1.4.1"}
-           tupelo/tupelo       {:mvn/version "23.07.04"}
+           org.clojure/clojure                          {:mvn/version "1.12.0-beta1"}
+           prismatic/schema                             {:mvn/version "1.4.1"}
+           tupelo/tupelo                                {:mvn/version "23.07.04"}
+
+           org.camunda.bpm/camunda-external-task-client {:mvn/version "7.23.0"}
+           org.slf4j/slf4j-simple                       {:mvn/version "1.7.36"}
+           jakarta.xml.bind/jakarta.xml.bind-api        {:mvn/version "4.0.2"}
            }
+
  :aliases {
            :run          {:exec-fn demo.core/-main
                           }
