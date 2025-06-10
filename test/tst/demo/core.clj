@@ -47,8 +47,8 @@
       (.subscribe it "charge-card")
       (.lockDuration it 1000) ; the default lock duration is 20 seconds, but you can override this
       (.handler it handler)
-      (.open it)
-      )
+      (.open it))
+    (spyxx client)
 
     ))
 
