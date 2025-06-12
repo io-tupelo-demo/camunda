@@ -22,8 +22,14 @@
         amount (.getVariable externalTask "amount") ; Integer
         ]
 
-    (println (format "Charging credit card with an amount of '%s' for the item '%s'..."
+    (println (format "    Charging credit card with an amount of '%s' for the item '%s'..."
                      amount item))
+    (prn :----------------------------------------------------------------------------------------------------)
+    (println (Thread/currentThread) )
+    (prn :----------------------------------------------------------------------------------------------------)
+    (spyx (.isDaemon (Thread/currentThread)))
+    (prn :----------------------------------------------------------------------------------------------------)
+    (prn (Thread/dumpStack))
 
     ;try {
     ;     Desktop.getDesktop () .browse (new URI ("https://docs.camunda.org/get-started/quick-start/complete")) ;
@@ -32,23 +38,25 @@
     ;                            }
 
     ; Complete the task
-    (spyx (.complete externalTaskService externalTask)))
+    (.complete externalTaskService externalTask))
   (spy :handler--enter))
 
 (verify
   (let [client (it-> (ExternalTaskClient/create)
                  (.baseUrl it "http://localhost:8080/engine-rest")
                  (.asyncResponseTimeout it 10000) ; long polling timeout
-                 (.build it))
-        ]
+                 (.build it))]
+    (nl)
+    (prn :----------------------------------------------------------------------------------------------------)
     (spyxx client)
-    ; subscribe to an external task topic as specified in the process
-    (it-> client
-      (.subscribe it "charge-card")
-      (.lockDuration it 1000) ; the default lock duration is 20 seconds, but you can override this
-      (.handler it handler)
-      (.open it))
-    (spyxx client)
+    (let [; subscribe to an external task topic as specified in the process
+          subscription (it-> client
+                         (.subscribe it "charge-card")
+                         (.lockDuration it 1000) ; the default lock duration is 20 seconds, but you can override this
+                         (.handler it handler)
+                         (.open it))]
+      (nl)
+      (prn :----------------------------------------------------------------------------------------------------)
+      (spyxx subscription)
 
-    ))
-
+      )))
