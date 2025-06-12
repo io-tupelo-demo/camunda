@@ -6,16 +6,22 @@
     [tupelo.string :as str]
     )
   (:import
+    [java.net URI]
+    [java.awt Desktop]
     [org.camunda.bpm.client ExternalTaskClient])
   )
+
+(def ^:dynamic *debug* false)
 
 ; Maybe needed in BPMN file
 ; <camunda:executionListener class="org.camunda.qa.MyExecutionListener" event="start" />
 
 (defn handler
   [externalTask externalTaskService]
-  (spy :handler--enter)
-  ; Put your business logic here
+  (when *debug*
+    (nl)
+    (prn :----------------------------------------------------------------------------------------------------)
+    (spy :handler--enter))
 
   ; Get a process variable
   (let [item   (.getVariable externalTask "item") ; String
@@ -24,22 +30,29 @@
 
     (println (format "    Charging credit card with an amount of '%s' for the item '%s'..."
                      amount item))
-    (prn :----------------------------------------------------------------------------------------------------)
-    (println (Thread/currentThread) )
-    (prn :----------------------------------------------------------------------------------------------------)
-    (spyx (.isDaemon (Thread/currentThread)))
-    (prn :----------------------------------------------------------------------------------------------------)
-    (prn (Thread/dumpStack))
 
-    ;try {
-    ;     Desktop.getDesktop () .browse (new URI ("https://docs.camunda.org/get-started/quick-start/complete")) ;
-    ;     } catch (Exception e) {
-    ;                            e.printStackTrace () ;
-    ;                            }
+    (when *debug*     ; debug info
+      (nl)
+      (spyx (Thread/currentThread))
+      (spyx (.isDaemon (Thread/currentThread)))
+      (nl)
+      (println "Thread/dumpStack")
+      (Thread/dumpStack))
+
+    (when false
+      (try          ; show a success page on the default browser
+        (it-> (Desktop/getDesktop)
+          (.browse it (new URI "https://docs.camunda.org/get-started/quick-start/complete")))
+        (catch Exception e
+          (.printStackTrace e))))
 
     ; Complete the task
     (.complete externalTaskService externalTask))
-  (spy :handler--enter))
+
+  (when *debug*
+    (spy :handler--leave)
+    (nl))
+  )
 
 (verify
   (let [client (it-> (ExternalTaskClient/create)
