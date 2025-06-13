@@ -1,5 +1,6 @@
-#!/bin/bash 
+#!/bin/bash
 
+set -v
 
 curl -H "Content-Type: application/json" -X POST  \
   -d '{"variables": {"amount": {"value":345,"type":"integer"}, "item": {"value":"item-xyz"} } }'  \

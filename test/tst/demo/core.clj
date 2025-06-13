@@ -11,7 +11,7 @@
     [org.camunda.bpm.client ExternalTaskClient])
   )
 
-(def ^:dynamic *debug* false)
+(def ^:dynamic *debug* true)
 
 ; Maybe needed in BPMN file
 ; <camunda:executionListener class="org.camunda.qa.MyExecutionListener" event="start" />
@@ -39,13 +39,6 @@
       (println "Thread/dumpStack")
       (Thread/dumpStack))
 
-    (when false
-      (try          ; show a success page on the default browser
-        (it-> (Desktop/getDesktop)
-          (.browse it (new URI "https://docs.camunda.org/get-started/quick-start/complete")))
-        (catch Exception e
-          (.printStackTrace e))))
-
     ; Complete the task
     (.complete externalTaskService externalTask))
 
@@ -54,18 +47,39 @@
     (nl))
   )
 
+(comment
+  (verify
+    (let [client (it-> (ExternalTaskClient/create)
+                   (.baseUrl it "http://localhost:8080/engine-rest")
+                   (.asyncResponseTimeout it 10000) ; long polling timeout (millis)
+                   (.build it))]
+      (nl)
+      (prn :----------------------------------------------------------------------------------------------------)
+      (spyxx client)
+      (let [; subscribe to an external task topic as specified in the process
+            subscription (it-> client
+                           (.subscribe it "charge-card")
+                           (.lockDuration it 9999) ; (millis) default is 20 seconds, but can override
+                           (.handler it handler)
+                           (.open it))]
+        (nl)
+        (prn :----------------------------------------------------------------------------------------------------)
+        (spyxx subscription)
+
+        ))))
+
 (verify
   (let [client (it-> (ExternalTaskClient/create)
                  (.baseUrl it "http://localhost:8080/engine-rest")
-                 (.asyncResponseTimeout it 10000) ; long polling timeout
+                 (.asyncResponseTimeout it 10000) ; (millis) long polling timeout
                  (.build it))]
     (nl)
     (prn :----------------------------------------------------------------------------------------------------)
     (spyxx client)
     (let [; subscribe to an external task topic as specified in the process
           subscription (it-> client
-                         (.subscribe it "charge-card")
-                         (.lockDuration it 1000) ; the default lock duration is 20 seconds, but you can override this
+                         (.subscribe it "download-file-from-s3")
+                         (.lockDuration it 1000) ; (millis) default is 20 seconds, but can override
                          (.handler it handler)
                          (.open it))]
       (nl)
