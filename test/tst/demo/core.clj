@@ -21,17 +21,18 @@
   (when *debug*
     (nl)
     (prn :----------------------------------------------------------------------------------------------------)
-    (spy :handler--enter))
+    (spy :handler--enter)
+    (spyx externalTask)
+    (spyx externalTaskService))
 
   ; Get a process variable
-  (let [item   (.getVariable externalTask "item") ; String
-        amount (.getVariable externalTask "amount") ; Integer
-        ]
+  (let [bucket (.getVariable externalTask "bucket")
+        key    (.getVariable externalTask "key")]
 
-    (println (format "    Charging credit card with an amount of '%s' for the item '%s'..."
-                     amount item))
+    (println (format "    Charging credit card with an bucket='%s' and key='%s'..."
+               bucket key))
 
-    (when *debug*     ; debug info
+    (when *debug* ; debug info
       (nl)
       (spyx (Thread/currentThread))
       (spyx (.isDaemon (Thread/currentThread)))
@@ -39,34 +40,14 @@
       (println "Thread/dumpStack")
       (Thread/dumpStack))
 
-    ; Complete the task
-    (.complete externalTaskService externalTask))
+    (let [vars {"filename" "dummy.txt"}]
+      ; Complete the task
+      (spyx (.complete externalTaskService externalTask vars))))
 
   (when *debug*
     (spy :handler--leave)
     (nl))
   )
-
-(comment
-  (verify
-    (let [client (it-> (ExternalTaskClient/create)
-                   (.baseUrl it "http://localhost:8080/engine-rest")
-                   (.asyncResponseTimeout it 10000) ; long polling timeout (millis)
-                   (.build it))]
-      (nl)
-      (prn :----------------------------------------------------------------------------------------------------)
-      (spyxx client)
-      (let [; subscribe to an external task topic as specified in the process
-            subscription (it-> client
-                           (.subscribe it "charge-card")
-                           (.lockDuration it 9999) ; (millis) default is 20 seconds, but can override
-                           (.handler it handler)
-                           (.open it))]
-        (nl)
-        (prn :----------------------------------------------------------------------------------------------------)
-        (spyxx subscription)
-
-        ))))
 
 (verify
   (let [client (it-> (ExternalTaskClient/create)
@@ -78,8 +59,8 @@
     (spyxx client)
     (let [; subscribe to an external task topic as specified in the process
           subscription (it-> client
-                         (.subscribe it "download-file-from-s3")
-                         (.lockDuration it 1000) ; (millis) default is 20 seconds, but can override
+                         (.subscribe it "charge-card")
+                         (.lockDuration it 9999) ; (millis) default is 20 seconds, but can override
                          (.handler it handler)
                          (.open it))]
       (nl)
