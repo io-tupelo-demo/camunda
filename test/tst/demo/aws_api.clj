@@ -27,9 +27,8 @@
     (is= [] buckets) ; empty
 
     ; make a bucket
-    (let [r1  (create-bucket s3-client "buck")
-          r2 (grab :Buckets (aws/invoke s3-client {:op :ListBuckets}))
-          ]
+    (create-bucket s3-client "buck")
+    (let [r2 (grab :Buckets (aws/invoke s3-client {:op :ListBuckets}))]
       (is (submatch? [{:Name "buck"}] r2))
 
       ; (spyx-pretty (aws/doc s3-client :PutObject))
@@ -42,50 +41,8 @@
                              :Key "dummy1.txt"
                              :Body   (io/input-stream "/tmp/dummy1.txt")}})
 
-
       (let [out-str (get-file-content s3-client "buck" "dummy1.txt")]
         (is= dummy-str out-str))
 
       (delete-bucket-force s3-client "buck"))))
 
-(verify
-  (let [s3 (aws/client {:api :s3})
-        ]
-
-    #_(binding [*print-length* 1]
-        (spyx-pretty (aws/ops s3)))
-
-    (spyx-pretty (aws/doc s3 :CreateBucket))
-    (spyx (aws/validate-requests s3 true))
-
-    (do
-      (aws/invoke s3 {:op :ListBuckets})
-      ;; => {:Buckets [{:Name <name> :CreationDate <date> ,,,}]}
-
-      ;; http-request and http-response are in the metadata
-      (meta *1)
-      ;; => {:http-request {:request-method :get,
-      ;;                    :scheme :https,
-      ;;                    :server-port 443,
-      ;;                    :uri "/",
-      ;;                    :headers {,,,},
-      ;;                    :server-name "s3.amazonaws.com",
-      ;;                    :body nil},
-      ;;     :http-response {:status 200,
-      ;;                     :headers {,,,},
-      ;;                     :body <input-stream>}
-
-      ;; create a bucket in the same region as the client
-      (aws/invoke s3 {:op :CreateBucket :request {:Bucket "my-unique-bucket-name"}})
-
-      ;; create a bucket in a region other than us-east-1
-      (aws/invoke s3 {:op :CreateBucket :request {:Bucket "my-unique-bucket-name-in-us-west-1"
-                                                  :CreateBucketConfiguration
-                                                  {:LocationConstraint "us-west-1"}}})
-
-      ;; NOTE: be sure to create a client with region "us-west-1" when accessing that bucket.
-
-      (aws/invoke s3 {:op :ListBuckets})
-
-      )
-    ))
