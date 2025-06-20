@@ -7,6 +7,10 @@
 
  :deps    {
            org.clojure/clojure                          {:mvn/version "1.12.1"}
+
+           com.cognitect.aws/api                        {:mvn/version "0.8.741"}
+           com.cognitect.aws/endpoints                  {:mvn/version "871.2.31.64"}
+           com.cognitect.aws/s3                         {:mvn/version "871.2.31.64"}
            prismatic/schema                             {:mvn/version "1.4.1"}
            tupelo/tupelo                                {:mvn/version "24.12.25"}
 
