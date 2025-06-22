@@ -15,7 +15,7 @@
   (let [minio-credentials (credentials/basic-credentials-provider {:access-key-id     "minioadmin"
                                                                    :secret-access-key "minioadmin"})
         s3-client         (aws/client {:api                  :s3
-                                       :region               "us-east-1" ; *** DUMMY VALUE ***
+                                       :region               "us-east-1" ; any legal value accepted
                                        :credentials-provider minio-credentials
                                        :endpoint-override    {:protocol :http
                                                               :hostname "localhost"
