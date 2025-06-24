@@ -11,7 +11,7 @@
       <bpmn:outgoing>Flow_0u01t3u</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_0u01t3u" sourceRef="StartEvent_1" targetRef="nff-01" />
-    <bpmn:serviceTask id="nff-01" name="New File Found" camunda:type="external" camunda:topic="new-file-found">
+    <bpmn:serviceTask id="nff-01" name="New File Task" camunda:type="external" camunda:topic="new-file-found">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="bucket">${bucket}</camunda:inputParameter>

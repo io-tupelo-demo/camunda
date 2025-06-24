@@ -7,7 +7,7 @@
     [org.camunda.bpm.client ExternalTaskClient])
   )
 
-(def ^:dynamic *debug* true)
+(def ^:dynamic *debug* false)
 
 ; Maybe needed in BPMN file
 ; <camunda:executionListener class="org.camunda.qa.MyExecutionListener" event="start" />
@@ -22,11 +22,13 @@
     (spyx externalTask)
     (nl)
     (spyx externalTaskService)
-    (nl))
+    )
 
-  ; Get a process variable
+  ; Get a process variable (vars defined in BPMN file)
   (let [bucket (.getVariable externalTask "bucket")
         key    (.getVariable externalTask "key")
+
+        filename (str "/" bucket "/" key) ; pretend we copy the file here
 
         camunda-data (vals->map bucket key)]
 
@@ -35,14 +37,15 @@
     (nl)
 
     (when *debug* ; debug info
-      (nl)
       (spyx (Thread/currentThread))
       (spyx (.isDaemon (Thread/currentThread)))
       (nl)
       (println "Thread/dumpStack")
-      (Thread/dumpStack))
+      (Thread/dumpStack)
+      (nl)
+      )
 
-    (let [vars {"filename" "dummy.txt"}]
+    (let [vars {"filename" filename}] ; output variable defined in BPMN file (string key!)
       ; Complete the task
       (spyx (.complete externalTaskService externalTask vars))))
 
