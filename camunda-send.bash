@@ -3,5 +3,5 @@
 set -v
 
 curl  -X POST  -H "Content-Type: application/json"  -d @data.json  \
-  http://localhost:8080/engine-rest/process-definition/key/aaa-payment-process/start
+  http://localhost:8080/engine-rest/process-definition/key/aaa-newfile-process/start
 

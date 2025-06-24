@@ -1,13 +1,9 @@
 (ns tst.demo.core
-  (:use demo.core
-        tupelo.core
-        tupelo.test)
+  (:use demo.core tupelo.core tupelo.test)
   (:require
     [tupelo.string :as str]
     )
   (:import
-    [java.net URI]
-    [java.awt Desktop]
     [org.camunda.bpm.client ExternalTaskClient])
   )
 
@@ -22,15 +18,21 @@
     (nl)
     (prn :----------------------------------------------------------------------------------------------------)
     (spy :handler--enter)
+    (nl)
     (spyx externalTask)
-    (spyx externalTaskService))
+    (nl)
+    (spyx externalTaskService)
+    (nl))
 
   ; Get a process variable
   (let [bucket (.getVariable externalTask "bucket")
-        key    (.getVariable externalTask "key")]
+        key    (.getVariable externalTask "key")
 
-    (println (format "    Charging credit card with an bucket='%s' and key='%s'..."
-               bucket key))
+        camunda-data (vals->map bucket key)]
+
+    (nl)
+    (spyx-pretty camunda-data)
+    (nl)
 
     (when *debug* ; debug info
       (nl)
@@ -51,7 +53,7 @@
 
 ;***************************************************************************************************
 ;********* #todo #awt enable when camunda server is running ****************************************
-(when false
+(when true
 
   (verify
     (let [client (it-> (ExternalTaskClient/create)
@@ -63,7 +65,7 @@
       (spyxx client)
       (let [; subscribe to an external task topic as specified in the process
             subscription (it-> client
-                           (.subscribe it "charge-card")
+                           (.subscribe it "new-file-found")
                            (.lockDuration it 9999) ; (millis) default is 20 seconds, but can override
                            (.handler it handler)
                            (.open it))]

@@ -11,7 +11,7 @@
     )
   (:import [java.io File]))
 
-(verify-focus
+(verify
   (let [minio-credentials (credentials/basic-credentials-provider {:access-key-id     "minioadmin"
                                                                    :secret-access-key "minioadmin"})
         s3-client         (aws/client {:api                  :s3
