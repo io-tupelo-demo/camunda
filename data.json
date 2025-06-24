@@ -1,0 +1,3 @@
+{"businessKey":"alanKey", 
+ "variables": {"bucket": {"value":"abc", "type":"string"},
+               "key":    {"value":"def", "type":"string"}}}
