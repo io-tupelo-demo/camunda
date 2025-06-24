@@ -49,22 +49,26 @@
     (nl))
   )
 
-(verify
-  (let [client (it-> (ExternalTaskClient/create)
-                 (.baseUrl it "http://localhost:8080/engine-rest")
-                 (.asyncResponseTimeout it 10000) ; (millis) long polling timeout
-                 (.build it))]
-    (nl)
-    (prn :----------------------------------------------------------------------------------------------------)
-    (spyxx client)
-    (let [; subscribe to an external task topic as specified in the process
-          subscription (it-> client
-                         (.subscribe it "charge-card")
-                         (.lockDuration it 9999) ; (millis) default is 20 seconds, but can override
-                         (.handler it handler)
-                         (.open it))]
+;***************************************************************************************************
+;********* #todo #awt enable when camunda server is running ****************************************
+(when false
+
+  (verify
+    (let [client (it-> (ExternalTaskClient/create)
+                   (.baseUrl it "http://localhost:8080/engine-rest")
+                   (.asyncResponseTimeout it 10000) ; (millis) long polling timeout
+                   (.build it))]
       (nl)
       (prn :----------------------------------------------------------------------------------------------------)
-      (spyxx subscription)
+      (spyxx client)
+      (let [; subscribe to an external task topic as specified in the process
+            subscription (it-> client
+                           (.subscribe it "charge-card")
+                           (.lockDuration it 9999) ; (millis) default is 20 seconds, but can override
+                           (.handler it handler)
+                           (.open it))]
+        (nl)
+        (prn :----------------------------------------------------------------------------------------------------)
+        (spyxx subscription)
 
-      )))
+        ))))
