@@ -14,14 +14,6 @@
 
     <bpmn:sequenceFlow id="Flow_0u01t3u" sourceRef="StartEvent_1" targetRef="nff-01" />
     <bpmn:serviceTask id="nff-01" name="New File Task" camunda:type="external" camunda:topic="new-file-found">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="bucket">${bucket}</camunda:inputParameter>
-          <camunda:inputParameter name="key">${key}</camunda:inputParameter>
-          <camunda:inputParameter name="url" />
-          <camunda:outputParameter name="filename">${filename}</camunda:outputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0u01t3u</bpmn:incoming>
       <bpmn:outgoing>Flow_0k6dcdw</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -31,11 +23,11 @@
       <bpmn:incoming>Flow_0k6dcdw</bpmn:incoming>
       <bpmn:outgoing>Flow_1v2uc25</bpmn:outgoing>
     </bpmn:serviceTask>
+
     <bpmn:sequenceFlow id="Flow_1v2uc25" sourceRef="tft-01" targetRef="Event_11eo3jm" />
     <bpmn:endEvent id="Event_11eo3jm" name="NewFile Received">
       <bpmn:incoming>Flow_1v2uc25</bpmn:incoming>
     </bpmn:endEvent>
-
   </bpmn:process>
 
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
