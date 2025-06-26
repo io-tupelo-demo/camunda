@@ -3,12 +3,6 @@
   <bpmn:process id="aaa-newfile-process" name="NewFile Process" isExecutable="true" camunda:historyTimeToLive="3600">
 
     <bpmn:startEvent id="StartEvent_1" name="NewFile Retrieval Requested">
-      <bpmn:extensionElements>
-        <camunda:formData>
-          <camunda:formField id="bucket" label="Bucket" type="string" />
-          <camunda:formField id="key" label="Key" type="string" />
-        </camunda:formData>
-      </bpmn:extensionElements>
       <bpmn:outgoing>Flow_0u01t3u</bpmn:outgoing>
     </bpmn:startEvent>
 
