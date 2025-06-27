@@ -1,61 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_10pd7yh" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.36.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.23.0">
-  <bpmn:process id="aaa-newfile-process" name="NewFile Process" isExecutable="true" camunda:historyTimeToLive="3600">
-
-    <bpmn:startEvent id="StartEvent_1" name="NewFile Retrieval Requested">
+  <bpmn:process id="demo-process" name="Demo Process" isExecutable="true" camunda:historyTimeToLive="3600">
+    <bpmn:startEvent id="startEvent-01" name="StartEvent 01">
       <bpmn:outgoing>Flow_0u01t3u</bpmn:outgoing>
     </bpmn:startEvent>
-
-    <bpmn:sequenceFlow id="Flow_0u01t3u" sourceRef="StartEvent_1" targetRef="nff-01" />
-    <bpmn:serviceTask id="nff-01" name="New File Task" camunda:type="external" camunda:topic="new-file-found">
+    <bpmn:sequenceFlow id="Flow_0u01t3u" sourceRef="startEvent-01" targetRef="task-01" />
+    <bpmn:serviceTask id="task-01" name="Task 01" camunda:type="external" camunda:topic="topic-01">
       <bpmn:incoming>Flow_0u01t3u</bpmn:incoming>
       <bpmn:outgoing>Flow_0k6dcdw</bpmn:outgoing>
     </bpmn:serviceTask>
-
-    <bpmn:sequenceFlow id="Flow_0k6dcdw" sourceRef="nff-01" targetRef="tft-01" />
-    <bpmn:serviceTask id="tft-01" name="Touch File Task" camunda:type="external" camunda:topic="touch-file-topic">
+    <bpmn:sequenceFlow id="Flow_0k6dcdw" sourceRef="task-01" targetRef="task-02" />
+    <bpmn:serviceTask id="task-02" name="Task 02" camunda:type="external" camunda:topic="topic-02">
       <bpmn:incoming>Flow_0k6dcdw</bpmn:incoming>
       <bpmn:outgoing>Flow_1v2uc25</bpmn:outgoing>
     </bpmn:serviceTask>
-
-    <bpmn:sequenceFlow id="Flow_1v2uc25" sourceRef="tft-01" targetRef="Event_11eo3jm" />
-    <bpmn:endEvent id="Event_11eo3jm" name="NewFile Received">
+    <bpmn:sequenceFlow id="Flow_1v2uc25" sourceRef="task-02" targetRef="endEvent-01" />
+    <bpmn:endEvent id="endEvent-01" name="EndEvent 01">
       <bpmn:incoming>Flow_1v2uc25</bpmn:incoming>
     </bpmn:endEvent>
   </bpmn:process>
-
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="aaa-newfile-process">
-      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="demo-process">
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="startEvent-01">
         <dc:Bounds x="182" y="102" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="173" y="145" width="54" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1htow9c_di" bpmnElement="nff-01">
+      <bpmndi:BPMNShape id="Activity_1htow9c_di" bpmnElement="task-01">
         <dc:Bounds x="270" y="80" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0n65b1u_di" bpmnElement="Event_11eo3jm">
+      <bpmndi:BPMNShape id="Event_0n65b1u_di" bpmnElement="endEvent-01">
         <dc:Bounds x="632" y="102" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="605" y="78" width="89" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_16b8xsk_di" bpmnElement="tft-01">
+      <bpmndi:BPMNShape id="Activity_16b8xsk_di" bpmnElement="task-02">
         <dc:Bounds x="450" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0u01t3u_di" bpmnElement="Flow_0u01t3u">
         <di:waypoint x="218" y="120" />
         <di:waypoint x="270" y="120" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1v2uc25_di" bpmnElement="Flow_1v2uc25">
-        <di:waypoint x="550" y="120" />
-        <di:waypoint x="632" y="120" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0k6dcdw_di" bpmnElement="Flow_0k6dcdw">
         <di:waypoint x="370" y="120" />
         <di:waypoint x="450" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1v2uc25_di" bpmnElement="Flow_1v2uc25">
+        <di:waypoint x="550" y="120" />
+        <di:waypoint x="632" y="120" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

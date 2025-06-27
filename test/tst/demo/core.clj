@@ -14,7 +14,7 @@
 ; Maybe needed in BPMN file
 ; <camunda:executionListener class="org.camunda.qa.MyExecutionListener" event="start" />
 
-(defn newfile-handler
+(defn handler-01
   [externalTask externalTaskService]
   (spy :newfile--enter)
   (when *debug*
@@ -34,7 +34,7 @@
         camunda-data (vals->map bucket key)]
 
     (nl)
-    (spyx-pretty :newfile-handler camunda-data)
+    (spyx-pretty :handler-01 camunda-data)
     (nl)
 
     (when *debug* ; debug info
@@ -52,7 +52,7 @@
   (spy :newfile--leave)
   )
 
-(defn touchfile-handler
+(defn handler-02
   [externalTask externalTaskService]
   (spy :touchfile--enter)
 
@@ -72,7 +72,7 @@
         camunda-data (vals->map bucket key filename)]
 
     (nl)
-    (spyx-pretty :touchfile-handler camunda-data)
+    (spyx-pretty :handler-02 camunda-data)
     (nl)
 
     (when *debug* ; debug info
@@ -103,9 +103,9 @@
 
       (let [; subscribe to an external task topic as specified in the process
             subscription (it-> client-newfile
-                           (.subscribe it "new-file-found")
+                           (.subscribe it "topic-01")
                            (.lockDuration it 9999) ; (millis) default is 20 seconds, but can override
-                           (.handler it newfile-handler)
+                           (.handler it handler-01)
                            (.open it))]
         (when *debug*
           (nl)
@@ -123,9 +123,9 @@
 
       (let [; subscribe to an external task topic as specified in the process
             subscription (it-> client-touchfile
-                           (.subscribe it "touch-file-topic")
+                           (.subscribe it "topic-02")
                            (.lockDuration it 9999) ; (millis) default is 20 seconds, but can override
-                           (.handler it touchfile-handler)
+                           (.handler it handler-02)
                            (.open it))]
         (when *debug*
           (nl)
