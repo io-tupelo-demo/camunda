@@ -7,9 +7,7 @@
     [clojure.test]
     [cognitect.aws.client.api :as aws]
     [cognitect.aws.credentials :as credentials]
-    [tupelo.string :as str]
-    )
-  (:import [java.io File]))
+    ))
 
 (verify
   (let [minio-credentials (credentials/basic-credentials-provider {:access-key-id     "minioadmin"
