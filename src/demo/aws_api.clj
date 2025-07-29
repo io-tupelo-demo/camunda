@@ -51,7 +51,7 @@
               {:op :DeleteBucket
                :request {:Bucket bucket-name}}))
 
-(defn get-file-content
+(defn get-bucket-key
   [s3-client bucket key]
   (let [response (aws/invoke s3-client
                              {:op      :GetObject
