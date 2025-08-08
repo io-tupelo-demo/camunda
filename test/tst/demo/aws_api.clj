@@ -57,6 +57,13 @@
                                                     :port     19000})))
 (def s3-client (aws/client s3-client-opts))
 
+(verify-focus
+  (let [buckets     (grab :Buckets (aws/invoke s3-client {:op :ListBuckets}))]
+    (spyx-pretty buckets)
+    ; make a bucket
+    ; (create-bucket s3-client bucket-name)
+    ))
+
 (verify
   (let [bucket-name "instants"
         tmp-file    "/tmp/instant.txt"
