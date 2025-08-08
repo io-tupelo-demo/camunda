@@ -64,7 +64,9 @@
   (spyx s3-client-opts)
   (spyx s3-client)
 
-  (let [buckets     (grab :Buckets (aws/invoke s3-client {:op :ListBuckets}))]
+  (let [aws-result (aws/invoke s3-client {:op :ListBuckets})
+        buckets     (:Buckets aws-result)]
+    (spyx-pretty aws-result)
     (spyx-pretty buckets)
     ; make a bucket
     ; (create-bucket s3-client bucket-name)
