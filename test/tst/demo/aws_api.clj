@@ -69,8 +69,9 @@
     (spyx-pretty aws-result)
     (spyx-pretty buckets)
     ; make a bucket
-    ; (create-bucket s3-client bucket-name)
-    ))
+    (let [aws-result (create-bucket s3-client "tst-bucket-808")]
+      (spyx-pretty aws-result)
+      )))
 
 (verify
   (let [bucket-name "instants"
