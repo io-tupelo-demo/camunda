@@ -46,6 +46,7 @@
     ))
 
 (def s3-creds-provider (credentials/basic-credentials-provider s3-keys))
+
 (def s3-client-opts
   (cond-it-> {:api                  :s3
               :region               "us-east-1" ; any legal value accepted
@@ -58,6 +59,11 @@
 (def s3-client (aws/client s3-client-opts))
 
 (verify-focus
+  (spyx s3-keys)
+  (spyx s3-creds-provider)
+  (spyx s3-client-opts)
+  (spyx s3-client)
+
   (let [buckets     (grab :Buckets (aws/invoke s3-client {:op :ListBuckets}))]
     (spyx-pretty buckets)
     ; make a bucket
