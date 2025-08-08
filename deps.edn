@@ -13,7 +13,7 @@
            com.cognitect.aws/s3                         {:mvn/version "871.2.32.2"}
            prismatic/schema                             {:mvn/version "1.4.1"}
            tupelo/tupelo                                {:mvn/version "24.12.25"}
-           environ                                      {:mvn/version "1.2.0"}
+           environ/environ                              {:mvn/version "1.2.0"}
 
            org.camunda.bpm/camunda-external-task-client {:mvn/version "7.23.0"}
            org.slf4j/slf4j-simple                       {:mvn/version "1.7.36"} ; #todo #awt leave here for now

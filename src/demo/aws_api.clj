@@ -7,6 +7,8 @@
     [tupelo.string :as str]
     ))
 
+;---------------------------------------------------------------------------------------------------
+; #todo move to demo.util
 (s/defn system-get-property :- s/Str
   [prop :- s/Str] (System/getProperty prop))
 
@@ -25,6 +27,7 @@
 (s/defn is-linux? :- s/Bool
   [] (str/contains-str? (os-name-canonical) "linux"))
 
+;---------------------------------------------------------------------------------------------------
 ; Step 1: List and delete all objects
 (defn delete-all-objects
   [s3-client bucket-name]

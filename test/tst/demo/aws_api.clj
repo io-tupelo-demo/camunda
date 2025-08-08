@@ -13,6 +13,7 @@
     [tupelo.string :as str]
     ))
 
+; #todo move to demo.util
 (verify
   (with-redefs [system-get-property (const->fn "Windows 1776")]
     (isnt (is-linux?))
@@ -27,27 +28,34 @@
     (isnt (is-mac?))
     (isnt (is-windows?))))
 
+;---------------------------------------------------------------------------------------------------
 ; #todo #awt clean up to use profiles.clj and environ lib
 (def s3-keys
   (if (not (is-linux?))
-    ; laptop testing env
-    {:access-key-id     "minioadmin"
-     :secret-access-key "minioadmin"}
+    (do ; laptop testing env - minio default creds
+     (prn :local-testing--minio)
+      {:access-key-id     "minioadmin"
+       :secret-access-key "minioadmin"})
 
     ; QA or prod:  get from Linux env var
     ; *** WARNING *** note inconsistent naming of both keys
-    {:access-key-id     (environ/env :access-key)
-     :secret-access-key (environ/env :secret-key)}
+    (do
+      (prn :linux-testing--s3-via-environ)
+      {:access-key-id     (environ/env :access-key)
+       :secret-access-key (environ/env :secret-key)})
     ))
 
-(def minio-credentials (credentials/basic-credentials-provider {:access-key-id     "minioadmin"
-                                                                :secret-access-key "minioadmin"}))
-(def s3-client (aws/client {:api                  :s3
-                            :region               "us-east-1" ; any legal value accepted
-                            :credentials-provider minio-credentials
-                            :endpoint-override    {:protocol :http
-                                                   :hostname "localhost"
-                                                   :port     19000}}))
+(def s3-creds-provider (credentials/basic-credentials-provider s3-keys))
+(def s3-client-opts
+  (cond-it-> {:api                  :s3
+              :region               "us-east-1" ; any legal value accepted
+              :credentials-provider s3-creds-provider}
+
+    ; required for local testing with minio
+    (not (is-linux?)) (assoc it :endpoint-override {:protocol :http
+                                                    :hostname "localhost"
+                                                    :port     19000})))
+(def s3-client (aws/client s3-client-opts))
 
 (verify
   (let [bucket-name "instants"
