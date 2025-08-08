@@ -6,8 +6,17 @@
 
   :dependencies [
                  [org.clojure/clojure "1.12.1"]
-                 [prismatic/schema    "1.4.1"]
-                 [tupelo       "24.12.25"]
+
+                 [com.cognitect.aws/api "0.8.762"]
+                 [com.cognitect.aws/endpoints "871.2.32.15"]
+                 [com.cognitect.aws/s3 "871.2.32.2"]
+                 [prismatic/schema "1.4.1"]
+                 [tupelo/tupelo "24.12.25"]
+
+                 [org.camunda.bpm/camunda-external-task-client "7.23.0"]
+                 [org.slf4j/slf4j-simple "1.7.36"]
+                 [jakarta.xml.bind/jakarta.xml.bind-api "4.0.2"]
+                 [environ "1.2.0"]
                  ]
 
   :jvm-opts ["-Xmx4g"]

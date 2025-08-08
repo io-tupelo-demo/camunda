@@ -1,21 +1,22 @@
 {
  :paths   [
-           "src"    ; Clojure source files
-           "test"   ; Clojure source files
+           "src" ; Clojure source files
+           "test" ; Clojure source files
            ; "target/java" ; compiled Java *.class files
            ]
 
  :deps    {
            org.clojure/clojure                          {:mvn/version "1.12.1"}
 
-           com.cognitect.aws/api                        {:mvn/version "0.8.741"}
-           com.cognitect.aws/endpoints                  {:mvn/version "871.2.31.64"}
-           com.cognitect.aws/s3                         {:mvn/version "871.2.31.64"}
+           com.cognitect.aws/api                        {:mvn/version "0.8.762"}
+           com.cognitect.aws/endpoints                  {:mvn/version "871.2.32.15"}
+           com.cognitect.aws/s3                         {:mvn/version "871.2.32.2"}
            prismatic/schema                             {:mvn/version "1.4.1"}
            tupelo/tupelo                                {:mvn/version "24.12.25"}
+           environ                                      {:mvn/version "1.2.0"}
 
            org.camunda.bpm/camunda-external-task-client {:mvn/version "7.23.0"}
-           org.slf4j/slf4j-simple                       {:mvn/version "1.7.36"}
+           org.slf4j/slf4j-simple                       {:mvn/version "1.7.36"} ; #todo #awt leave here for now
            jakarta.xml.bind/jakarta.xml.bind-api        {:mvn/version "4.0.2"}
            }
 

@@ -7,9 +7,38 @@
     [clojure.test]
     [cognitect.aws.client.api :as aws]
     [cognitect.aws.credentials :as credentials]
+    [environ.core :as environ]
+    [schema.core :as s]
     [tupelo.java-time :as jt]
+    [tupelo.string :as str]
     ))
 
+(verify
+  (with-redefs [system-get-property (const->fn "Windows 1776")]
+    (isnt (is-linux?))
+    (isnt (is-mac?))
+    (is (is-windows?)))
+  (with-redefs [system-get-property (const->fn "Mac OS 1776")]
+    (isnt (is-linux?))
+    (is (is-mac?))
+    (isnt (is-windows?)))
+  (with-redefs [system-get-property (const->fn "Linux Ultra 1776")]
+    (is (is-linux?))
+    (isnt (is-mac?))
+    (isnt (is-windows?))))
+
+; #todo #awt clean up to use profiles.clj and environ lib
+(def s3-keys
+  (if (not (is-linux?))
+    ; laptop testing env
+    {:access-key-id     "minioadmin"
+     :secret-access-key "minioadmin"}
+
+    ; QA or prod:  get from Linux env var
+    ; *** WARNING *** note inconsistent naming of both keys
+    {:access-key-id     (environ/env :access-key)
+     :secret-access-key (environ/env :secret-key)}
+    ))
 
 (def minio-credentials (credentials/basic-credentials-provider {:access-key-id     "minioadmin"
                                                                 :secret-access-key "minioadmin"}))
