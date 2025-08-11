@@ -85,6 +85,14 @@
     (when (is-mac?)
       (is= [] buckets)))
 
+  ; make a bucket
+  (when (is-mac?)
+    (let [create-result (create-bucket s3-client bucket-name)
+          >>            (spyx create-result)
+          r2            (grab :Buckets (aws/invoke s3-client {:op :ListBuckets}))]
+      (is (submatch? [{:Name bucket-name}] r2))))
+
+  ; Add object to S3
   (let [dummy-str (jt/->str-iso-nice (jt/now->Instant))]
     (spit tmp-file dummy-str)
     (aws/invoke s3-client
@@ -92,18 +100,22 @@
        :request {:Bucket bucket-name
                  :Key    key-name
                  :Body   (io/input-stream tmp-file)}})
+
+    ; Get object from S3 and verify contents
     (let [content-str (get-bucket-key s3-client bucket-name key-name)]
       (spyx-pretty content-str)
       (is= dummy-str content-str))
 
+    ; Delete object from S3
     (let [delete-result (aws/invoke s3-client
                           {:op      :DeleteObject
                            :request {:Bucket bucket-name
                                      :Key    key-name}})]
       (is= {} delete-result)
-      ; cannot delete the bucket twice (=> exception)
-      (throws?  (get-bucket-key s3-client bucket-name key-name)))
+      ; Verify cannot delete the object twice (=> exception)
+      (throws? (get-bucket-key s3-client bucket-name key-name)))
 
     (when false ; normally, just leave latest value for browser inspection
       (when (is-mac?)
-        (delete-bucket-force s3-client bucket-name)))))
+        (delete-bucket-force s3-client bucket-name))))
+  )
