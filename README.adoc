@@ -1,0 +1,25 @@
+
+## How to run unit tests
+
+1. Download and install Minio
+  - use `minio-start.zsh` to start for clojure testing
+  - use `minio-env.zsh` if just need env vars for command line usage
+  - Use broser to view Minio S3 environment:  localhost:19000          Login: minioadmin/minioadmin
+
+2. Download & install Camunda 7 (not tested with Camunda 8)
+  - MacOS Camunda Modeler:      https://developers.camunda.com/install-camunda-8/
+  - Camunda 7 Docker image:     https://hub.docker.com/r/camunda/camunda-bpm-platform/ 
+        works with Podman on macos
+        (or use on heron-qa server)
+  - use `camunda-start.bash` to start camunda engine
+  - open on Camunda Modeler from Mac Launcher
+  - load `demo.bpmn` file, then "launch" (rocketship - lower left corner) into camunda engine
+  - use `camunda-send.bash` to initiate process state into first state
+  - refresh camunda in browser to see marker of first state box
+
+3. Run tests via `clojure -X:test` (alternate: "clojure -M:test-refresh")
+  - Runs normal S3 unit tests
+  - Runs 2 Camunda tasks
+  - Must use Ctrl-C to terminate since Camunda has non-daemon thread in JVM
+
+
