@@ -65,89 +65,36 @@
     "dummy")) ; for mac testing
 (def tmp-file "/tmp/dummy.txt")
 
-(when (is-linux?)
-  (verify-focus
-    (spyx s3-keys)
-    (spyx s3-creds-provider)
-    (spyx s3-client-opts)
-    (spyx s3-client)
+(verify-focus
+  (spyx s3-keys)
+  (spyx s3-creds-provider)
+  (spyx s3-client-opts)
+  (spyx s3-client)
 
-    (let [aws-result (aws/invoke s3-client {:op :ListBuckets})
-          buckets    (:Buckets aws-result)]
-      (spyx-pretty aws-result)
-      ; (spyx-pretty buckets)
-      )
+  (when (is-mac?)
+    (let [delete-result (delete-bucket-force s3-client bucket-name)]
+      (spyx-pretty delete-result)))
 
-    (let [key-name    "instant"
-          dummy-str   (jt/->str-iso-nice (jt/now->Instant))]
-      (spit tmp-file dummy-str)
-      (aws/invoke s3-client
-        {:op      :PutObject
-         :request {:Bucket bucket-name
-                   :Key    key-name
-                   :Body   (io/input-stream tmp-file)}})
+  (let [aws-result (aws/invoke s3-client {:op :ListBuckets})
+        buckets    (:Buckets aws-result)]
+    ; (spyx-pretty aws-result)
+    ; (spyx-pretty buckets)
+    (when (is-mac?)
+      (is= [] buckets))
+    )
 
-      (let [content-str (get-bucket-key s3-client bucket-name key-name)]
-        (spyx-pretty content-str)
-        (is= dummy-str content-str)))))
+  (let [key-name  "now-tmp"
+        dummy-str (jt/->str-iso-nice (jt/now->Instant))]
+    (spit tmp-file dummy-str)
+    (aws/invoke s3-client
+      {:op      :PutObject
+       :request {:Bucket bucket-name
+                 :Key    key-name
+                 :Body   (io/input-stream tmp-file)}})
+    (let [content-str (get-bucket-key s3-client bucket-name key-name)]
+      (spyx-pretty content-str)
+      (is= dummy-str content-str))
 
-(when (is-mac?)
-  (verify
-    (let [key-name    "instant"
-          >>          (delete-bucket-force s3-client bucket-name)
-          buckets     (grab :Buckets (aws/invoke s3-client {:op :ListBuckets}))
-          dummy-str   (jt/->str-iso-nice (jt/now->Instant))]
-      (is= [] buckets) ; empty
-
-      ; make a bucket
-      (create-bucket s3-client bucket-name)
-      (let [r2 (grab :Buckets (aws/invoke s3-client {:op :ListBuckets}))]
-        (is (submatch? [{:Name bucket-name}] r2))
-
-        ; (spyx-pretty (aws/doc s3-client :PutObject))
-        ; (spyx-pretty (aws/doc s3-client :GetObject))
-
-        (spit tmp-file dummy-str)
-        (aws/invoke s3-client
-          {:op      :PutObject
-           :request {:Bucket bucket-name
-                     :Key    key-name
-                     :Body   (io/input-stream tmp-file)}})
-
-        (let [content-str (get-bucket-key s3-client bucket-name key-name)]
-          (spyx-pretty content-str)
-          (is= dummy-str content-str))
-
-        (when false ; normally, just leave latest value for browser inspection
-          (delete-bucket-force s3-client bucket-name))
-        )))
-
-  (verify
-    (let [key-name     "instant"
-
-          >>           (delete-bucket-force s3-client bucket-name)
-          buckets      (grab :Buckets (aws/invoke s3-client {:op :ListBuckets}))
-          buckets-keep (keep-if #(= bucket-name (grab :Name %)) buckets)
-          dummy-str    "my dummy text file"]
-      (is= [] (spyx-pretty buckets-keep)) ; empty
-
-      ; make a bucket
-      (create-bucket s3-client bucket-name)
-      (let [r2 (grab :Buckets (aws/invoke s3-client {:op :ListBuckets}))]
-        (is (submatch? [{:Name bucket-name}] r2))
-
-        ; (spyx-pretty (aws/doc s3-client :PutObject))
-        ; (spyx-pretty (aws/doc s3-client :GetObject))
-
-        (spit tmp-file dummy-str)
-        (aws/invoke s3-client
-          {:op      :PutObject
-           :request {:Bucket bucket-name
-                     :Key    key-name
-                     :Body   (io/input-stream tmp-file)}})
-
-        (let [out-str (get-bucket-key s3-client bucket-name key-name)]
-          (is= dummy-str out-str))
-
-        (delete-bucket-force s3-client bucket-name))))
-  )
+    (when false ; normally, just leave latest value for browser inspection
+      (delete-bucket-force s3-client bucket-name))
+    ))
