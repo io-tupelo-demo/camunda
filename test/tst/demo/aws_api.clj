@@ -58,6 +58,13 @@
                                                     :port     19000})))
 (def s3-client (aws/client s3-client-opts))
 
+(def bucket-name
+  (if (is-linux?)
+    "lambdawerk-qa-testcases-and-data" ; must use pre-existing bucket on heron-qa
+    ; else
+    "dummy")) ; for mac testing
+(def tmp-file "/tmp/dummy.txt")
+
 (when (is-linux?)
   (verify-focus
     (spyx s3-keys)
@@ -68,11 +75,10 @@
     (let [aws-result (aws/invoke s3-client {:op :ListBuckets})
           buckets    (:Buckets aws-result)]
       (spyx-pretty aws-result)
-      (spyx-pretty buckets))
+      ; (spyx-pretty buckets)
+      )
 
-    (let [bucket-name "lambdawerk-qa-testcases-and-data" ; pre-existing on heron-qa
-          key-name    "instant"
-          tmp-file    "/tmp/instant.txt"
+    (let [key-name    "instant"
           dummy-str   (jt/->str-iso-nice (jt/now->Instant))]
       (spit tmp-file dummy-str)
       (aws/invoke s3-client
@@ -83,14 +89,11 @@
 
       (let [content-str (get-bucket-key s3-client bucket-name key-name)]
         (spyx-pretty content-str)
-        (is= dummy-str content-str)))
-    ))
+        (is= dummy-str content-str)))))
 
 (when (is-mac?)
   (verify
-    (let [bucket-name "instants"
-          tmp-file    "/tmp/instant.txt"
-          key-name    "instant"
+    (let [key-name    "instant"
           >>          (delete-bucket-force s3-client bucket-name)
           buckets     (grab :Buckets (aws/invoke s3-client {:op :ListBuckets}))
           dummy-str   (jt/->str-iso-nice (jt/now->Instant))]
@@ -120,9 +123,7 @@
         )))
 
   (verify
-    (let [bucket-name  "dummy"
-          tmp-file     "/tmp/dummy2.txt"
-          key-name     "instant"
+    (let [key-name     "instant"
 
           >>           (delete-bucket-force s3-client bucket-name)
           buckets      (grab :Buckets (aws/invoke s3-client {:op :ListBuckets}))
