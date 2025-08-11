@@ -68,13 +68,23 @@
     (let [aws-result (aws/invoke s3-client {:op :ListBuckets})
           buckets    (:Buckets aws-result)]
       (spyx-pretty aws-result)
-      (spyx-pretty buckets)
-      ; make a bucket
-      (let [aws-result (create-bucket s3-client "tst-bucket-808")]
-        (spyx-pretty aws-result)
-        )))
+      (spyx-pretty buckets))
 
-  )
+    (let [bucket-name "lambdawerk-qa-testcases-and-data" ; pre-existing on heron-qa
+          key-name    "instant"
+          tmp-file    "/tmp/instant.txt"
+          dummy-str   (jt/->str-iso-nice (jt/now->Instant))]
+      (spit tmp-file dummy-str)
+      (aws/invoke s3-client
+        {:op      :PutObject
+         :request {:Bucket bucket-name
+                   :Key    key-name
+                   :Body   (io/input-stream tmp-file)}})
+
+      (let [content-str (get-bucket-key s3-client bucket-name key-name)]
+        (spyx-pretty content-str)
+        (is= dummy-str content-str)))
+    ))
 
 (when (is-mac?)
   (verify
