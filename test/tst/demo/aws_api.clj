@@ -99,6 +99,8 @@
                            :request {:Bucket bucket-name
                                      :Key    key-name}})]
       (spyx-pretty delete-result))
+    (let [content-str (get-bucket-key s3-client bucket-name key-name)]
+      (spyx-pretty content-str))
 
     (when false ; normally, just leave latest value for browser inspection
       (when (is-mac?)
