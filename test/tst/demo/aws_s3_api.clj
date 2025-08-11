@@ -74,23 +74,27 @@
     (spyx s3-client)
     (spyx bucket-name))
 
+  ; For local testing, cleanup any remaining bucket from last run
   (when (is-mac?)
     (let [delete-result (delete-bucket-force s3-client bucket-name)]
-      (spyx-pretty delete-result)))
+      ; (spyx-pretty delete-result)
+      ))
 
+  ; List/print existing buckets if desired
   (let [aws-result (aws/invoke s3-client {:op :ListBuckets})
         buckets    (:Buckets aws-result)]
     ; (spyx-pretty aws-result)
     ; (spyx-pretty buckets)
-    (when (is-mac?)
-      (is= [] buckets)))
 
-  ; make a bucket
-  (when (is-mac?)
-    (let [create-result (create-bucket s3-client bucket-name)
-          >>            (spyx create-result)
-          r2            (grab :Buckets (aws/invoke s3-client {:op :ListBuckets}))]
-      (is (submatch? [{:Name bucket-name}] r2))))
+    ; Local testing
+    (when (is-mac?)
+      (is= [] buckets) ; ensure clean env
+
+      ; Make a test bucket
+      (let [create-result (create-bucket s3-client bucket-name)
+            >>            (spyx create-result)
+            r2            (grab :Buckets (aws/invoke s3-client {:op :ListBuckets}))]
+        (is (submatch? [{:Name bucket-name}] r2)))))
 
   ; Add object to S3
   (let [dummy-str (jt/->str-iso-nice (jt/now->Instant))]
@@ -104,18 +108,18 @@
     ; Get object from S3 and verify contents
     (let [content-str (get-object s3-client bucket-name key-name)]
       (spyx-pretty content-str)
-      (is= dummy-str content-str))
+      (is= dummy-str content-str)))
 
-    ; Delete object from S3
-    (let [delete-result (aws/invoke s3-client
-                          {:op      :DeleteObject
-                           :request {:Bucket bucket-name
-                                     :Key    key-name}})]
-      (is= {} delete-result)
-      ; Verify cannot delete the object twice (=> exception)
-      (throws? (get-object s3-client bucket-name key-name)))
+  ; Delete object from S3
+  (let [delete-result (aws/invoke s3-client
+                        {:op      :DeleteObject
+                         :request {:Bucket bucket-name
+                                   :Key    key-name}})]
+    (is= {} delete-result)
+    ; Verify cannot delete the object twice (=> exception)
+    (throws? (get-object s3-client bucket-name key-name))
 
-    (when false ; normally, just leave latest value for browser inspection
-      (when (is-mac?)
-        (delete-bucket-force s3-client bucket-name))))
-  )
+    ; For local testing, we sometimes leave bucket & object for manual inspection
+    ; using an S3 browser
+    (when (is-mac?)
+      (delete-bucket-force s3-client bucket-name))))

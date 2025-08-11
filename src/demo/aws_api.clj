@@ -75,7 +75,7 @@
                :request {:Bucket bucket-name}}))
 
 ;---------------------------------------------------------------------------------------------------
-(defn create-bucket
+(s/defn create-bucket
   "Create an S3 bucket."
   [s3-client :- s/Any
    bucket-name :- s/Str]
