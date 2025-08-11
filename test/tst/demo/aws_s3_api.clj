@@ -102,7 +102,7 @@
                  :Body   (io/input-stream tmp-file)}})
 
     ; Get object from S3 and verify contents
-    (let [content-str (get-bucket-key s3-client bucket-name key-name)]
+    (let [content-str (get-object s3-client bucket-name key-name)]
       (spyx-pretty content-str)
       (is= dummy-str content-str))
 
@@ -113,7 +113,7 @@
                                      :Key    key-name}})]
       (is= {} delete-result)
       ; Verify cannot delete the object twice (=> exception)
-      (throws? (get-bucket-key s3-client bucket-name key-name)))
+      (throws? (get-object s3-client bucket-name key-name)))
 
     (when false ; normally, just leave latest value for browser inspection
       (when (is-mac?)
