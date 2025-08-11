@@ -59,7 +59,7 @@
 (def s3-client (aws/client s3-client-opts))
 
 (when (is-linux?)
-  (verify
+  (verify-focus
     (spyx s3-keys)
     (spyx s3-creds-provider)
     (spyx s3-client-opts)
