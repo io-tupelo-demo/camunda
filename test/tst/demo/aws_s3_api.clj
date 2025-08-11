@@ -52,7 +52,7 @@
 (def key-name "now-tmp")
 (def tmp-file "/tmp/dummy.txt")
 
-(verify-focus
+(verify
   (when false ; enable for debug prints
     (spyx s3-keys)
     (spyx s3-creds-provider)
