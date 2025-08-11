@@ -1,8 +1,8 @@
 (ns demo.camunda-exec
       (:use tupelo.core )
       (:require
-        [demo.task-01 :as task-01]
-        [demo.task-02 :as task-02]
+        [demo.camunda-task-01 :as task-01]
+        [demo.camunda-task-02 :as task-02]
         ))
 
 (prn :demo.camunda-exec)
