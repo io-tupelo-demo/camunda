@@ -32,8 +32,8 @@
 ; #todo #awt clean up to use profiles.clj and environ lib
 (def s3-keys
   (if (not (is-linux?))
-    (do ; laptop testing env - minio default creds
-     (prn :local-testing--minio)
+    (do   ; laptop testing env - minio default creds
+      (prn :local-testing--minio)
       {:access-key-id     "minioadmin"
        :secret-access-key "minioadmin"})
 
@@ -46,6 +46,7 @@
     ))
 
 (def s3-creds-provider (credentials/basic-credentials-provider s3-keys))
+
 (def s3-client-opts
   (cond-it-> {:api                  :s3
               :region               "us-east-1" ; any legal value accepted
@@ -57,72 +58,63 @@
                                                     :port     19000})))
 (def s3-client (aws/client s3-client-opts))
 
+(def bucket-name
+  (if (is-linux?)
+    "lambdawerk-qa-testcases-and-data" ; must use pre-existing bucket on heron-qa
+    ; else
+    "dummy")) ; for mac testing
+(def key-name "now-tmp")
+(def tmp-file "/tmp/dummy.txt")
+
 (verify-focus
-  (let [buckets     (grab :Buckets (aws/invoke s3-client {:op :ListBuckets}))]
-    (spyx-pretty buckets)
-    ; make a bucket
-    ; (create-bucket s3-client bucket-name)
-    ))
+  (when false ; enable for debug prints
+    (spyx s3-keys)
+    (spyx s3-creds-provider)
+    (spyx s3-client-opts)
+    (spyx s3-client)
+    (spyx bucket-name))
 
-(verify
-  (let [bucket-name "instants"
-        tmp-file    "/tmp/instant.txt"
-        key-name    "instant"
-        >>          (delete-bucket-force s3-client bucket-name)
-        buckets     (grab :Buckets (aws/invoke s3-client {:op :ListBuckets}))
-        dummy-str   (jt/->str-iso-nice (jt/now->Instant))]
-    (is= [] buckets) ; empty
+  (when (is-mac?)
+    (let [delete-result (delete-bucket-force s3-client bucket-name)]
+      (spyx-pretty delete-result)))
 
-    ; make a bucket
-    (create-bucket s3-client bucket-name)
-    (let [r2 (grab :Buckets (aws/invoke s3-client {:op :ListBuckets}))]
-      (is (submatch? [{:Name bucket-name}] r2))
+  (let [aws-result (aws/invoke s3-client {:op :ListBuckets})
+        buckets    (:Buckets aws-result)]
+    ; (spyx-pretty aws-result)
+    ; (spyx-pretty buckets)
+    (when (is-mac?)
+      (is= [] buckets)))
 
-      ; (spyx-pretty (aws/doc s3-client :PutObject))
-      ; (spyx-pretty (aws/doc s3-client :GetObject))
+  ; make a bucket
+  (when (is-mac?)
+    (let [create-result (create-bucket s3-client bucket-name)
+          >>            (spyx create-result)
+          r2            (grab :Buckets (aws/invoke s3-client {:op :ListBuckets}))]
+      (is (submatch? [{:Name bucket-name}] r2))))
 
-      (spit tmp-file dummy-str)
-      (aws/invoke s3-client
-        {:op      :PutObject
-         :request {:Bucket bucket-name
-                   :Key    key-name
-                   :Body   (io/input-stream tmp-file)}})
+  ; Add a test file to S3
+  (let [dummy-str (jt/->str-iso-nice (jt/now->Instant))]
+    (spit tmp-file dummy-str)
+    (aws/invoke s3-client
+      {:op      :PutObject
+       :request {:Bucket bucket-name
+                 :Key    key-name
+                 :Body   (io/input-stream tmp-file)}})
 
-      (let [content-str (get-bucket-key s3-client bucket-name key-name)]
-        (spyx-pretty content-str)
-        (is= dummy-str content-str))
+    ; Read test file from S3 & verify contents
+    (let [content-str (get-bucket-key s3-client bucket-name key-name)]
+      (spyx-pretty content-str)
+      (is= dummy-str content-str))
 
-      (when false ; normally, just leave latest value for browser inspection
-        (delete-bucket-force s3-client bucket-name))
-      )))
+    ; Delete test file on S3
+    (let [delete-result (aws/invoke s3-client
+                          {:op      :DeleteObject
+                           :request {:Bucket bucket-name
+                                     :Key    key-name}})]
+      (is= {} delete-result)
+      ; Verify cannot delete twice (=> exception)
+      (throws? (get-bucket-key s3-client bucket-name key-name)))
 
-(verify
-  (let [bucket-name  "dummy"
-        tmp-file     "/tmp/dummy2.txt"
-        key-name     "instant"
-
-        >>           (delete-bucket-force s3-client bucket-name)
-        buckets      (grab :Buckets (aws/invoke s3-client {:op :ListBuckets}))
-        buckets-keep (keep-if #(= bucket-name (grab :Name %)) buckets)
-        dummy-str    "my dummy text file"]
-    (is= [] (spyx-pretty buckets-keep)) ; empty
-
-    ; make a bucket
-    (create-bucket s3-client bucket-name)
-    (let [r2 (grab :Buckets (aws/invoke s3-client {:op :ListBuckets}))]
-      (is (submatch? [{:Name bucket-name}] r2))
-
-      ; (spyx-pretty (aws/doc s3-client :PutObject))
-      ; (spyx-pretty (aws/doc s3-client :GetObject))
-
-      (spit tmp-file dummy-str)
-      (aws/invoke s3-client
-        {:op      :PutObject
-         :request {:Bucket bucket-name
-                   :Key    key-name
-                   :Body   (io/input-stream tmp-file)}})
-
-      (let [out-str (get-bucket-key s3-client bucket-name key-name)]
-        (is= dummy-str out-str))
-
-      (delete-bucket-force s3-client bucket-name))))
+    (when false ; normally, just leave latest value for browser inspection
+      (when (is-mac?)
+        (delete-bucket-force s3-client bucket-name)))))
