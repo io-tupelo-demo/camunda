@@ -3,7 +3,6 @@
         tupelo.core
         tupelo.test)
   (:require
-    [clojure.java.io :as io]
     [clojure.test]
     [cognitect.aws.client.api :as aws]
     [cognitect.aws.credentials :as credentials]
@@ -85,11 +84,7 @@
   ; Add object to S3
   (let [dummy-str (jt/->str-iso-nice (jt/now->Instant))]
     (spit tmp-file dummy-str)
-    (aws/invoke s3-client
-      {:op      :PutObject
-       :request {:Bucket bucket-name
-                 :Key    key-name
-                 :Body   (io/input-stream tmp-file)}})
+    (put-object s3-client bucket-name key-name tmp-file)
 
     ; Get object from S3 and verify contents
     (let [content-str (get-object s3-client bucket-name key-name)]

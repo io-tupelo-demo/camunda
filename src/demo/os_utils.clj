@@ -1,7 +1,6 @@
 (ns demo.os-utils
   (:use tupelo.core)
   (:require
-    [cognitect.aws.client.api :as aws]
     [schema.core :as s]
     [tupelo.string :as str]
     ))
