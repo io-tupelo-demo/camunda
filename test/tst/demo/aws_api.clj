@@ -67,10 +67,12 @@
 (def tmp-file "/tmp/dummy.txt")
 
 (verify-focus
-  (spyx s3-keys)
-  (spyx s3-creds-provider)
-  (spyx s3-client-opts)
-  (spyx s3-client)
+  (when false ; enable for debug prints
+    (spyx s3-keys)
+    (spyx s3-creds-provider)
+    (spyx s3-client-opts)
+    (spyx s3-client)
+    (spyx bucket-name))
 
   (when (is-mac?)
     (let [delete-result (delete-bucket-force s3-client bucket-name)]
