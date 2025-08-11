@@ -63,6 +63,7 @@
     "lambdawerk-qa-testcases-and-data" ; must use pre-existing bucket on heron-qa
     ; else
     "dummy")) ; for mac testing
+(def key-name "now-tmp")
 (def tmp-file "/tmp/dummy.txt")
 
 (verify-focus
@@ -80,11 +81,9 @@
     ; (spyx-pretty aws-result)
     ; (spyx-pretty buckets)
     (when (is-mac?)
-      (is= [] buckets))
-    )
+      (is= [] buckets)))
 
-  (let [key-name  "now-tmp"
-        dummy-str (jt/->str-iso-nice (jt/now->Instant))]
+  (let [dummy-str (jt/->str-iso-nice (jt/now->Instant))]
     (spit tmp-file dummy-str)
     (aws/invoke s3-client
       {:op      :PutObject
@@ -95,6 +94,12 @@
       (spyx-pretty content-str)
       (is= dummy-str content-str))
 
+    (let [delete-result (aws/invoke s3-client
+                          {:op      :DeleteObject
+                           :request {:Bucket bucket-name
+                                     :Key    key-name}})]
+      (spyx-pretty delete-result))
+
     (when false ; normally, just leave latest value for browser inspection
-      (delete-bucket-force s3-client bucket-name))
-    ))
+      (when (is-mac?)
+        (delete-bucket-force s3-client bucket-name)))))
