@@ -1,4 +1,4 @@
-(ns tst.demo.aws-api
+(ns tst.demo.aws-s3-api
   (:use demo.aws-api
         tupelo.core
         tupelo.test)
