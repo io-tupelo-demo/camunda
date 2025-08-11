@@ -8,30 +8,16 @@
     [cognitect.aws.client.api :as aws]
     [cognitect.aws.credentials :as credentials]
     [environ.core :as environ]
+    [demo.os-utils :as os]
     [schema.core :as s]
     [tupelo.java-time :as jt]
     [tupelo.string :as str]
     ))
 
-; #todo move to demo.util
-(verify
-  (with-redefs [system-get-property (const->fn "Windows 1776")]
-    (isnt (is-linux?))
-    (isnt (is-mac?))
-    (is (is-windows?)))
-  (with-redefs [system-get-property (const->fn "Mac OS 1776")]
-    (isnt (is-linux?))
-    (is (is-mac?))
-    (isnt (is-windows?)))
-  (with-redefs [system-get-property (const->fn "Linux Ultra 1776")]
-    (is (is-linux?))
-    (isnt (is-mac?))
-    (isnt (is-windows?))))
-
 ;---------------------------------------------------------------------------------------------------
 ; #todo #awt clean up to use profiles.clj and environ lib
 (def s3-keys
-  (if (not (is-linux?))
+  (if (not (os/is-linux?))
     (do   ; laptop testing env - minio default creds
       (prn :local-testing--minio)
       {:access-key-id     "minioadmin"
@@ -53,13 +39,13 @@
               :credentials-provider s3-creds-provider}
 
     ; required for local testing with minio
-    (not (is-linux?)) (assoc it :endpoint-override {:protocol :http
+    (not (os/is-linux?)) (assoc it :endpoint-override {:protocol :http
                                                     :hostname "localhost"
                                                     :port     19000})))
 (def s3-client (aws/client s3-client-opts))
 
 (def bucket-name
-  (if (is-linux?)
+  (if (os/is-linux?)
     "lambdawerk-qa-testcases-and-data" ; must use pre-existing bucket on heron-qa
     ; else
     "dummy")) ; for mac testing
@@ -75,7 +61,7 @@
     (spyx bucket-name))
 
   ; For local testing, cleanup any remaining bucket from last run
-  (when (is-mac?)
+  (when (os/is-mac?)
     (let [delete-result (delete-bucket-force s3-client bucket-name)]
       ; (spyx-pretty delete-result)
       ))
@@ -87,7 +73,7 @@
     ; (spyx-pretty buckets)
 
     ; Local testing
-    (when (is-mac?)
+    (when (os/is-mac?)
       (is= [] buckets) ; ensure clean env
 
       ; Make a test bucket
@@ -121,5 +107,5 @@
 
     ; For local testing, we sometimes leave bucket & object for manual inspection
     ; using an S3 browser
-    (when (is-mac?)
+    (when (os/is-mac?)
       (delete-bucket-force s3-client bucket-name))))
