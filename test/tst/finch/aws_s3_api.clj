@@ -1,11 +1,11 @@
-(ns tst.demo.aws-s3-api
-  (:use demo.aws-api
+(ns tst.finch.aws-s3-api
+  (:use finch.aws-api
         tupelo.core
         tupelo.test)
   (:require
     [clojure.test]
     [cognitect.aws.client.api :as aws]
-    [demo.os-utils :as os]
+    [finch.os-utils :as os]
     [finch.config :as config]
     [schema.core :as s]
     [tupelo.java-time :as jt]

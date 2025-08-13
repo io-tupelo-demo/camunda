@@ -1,5 +1,5 @@
-(ns tst.demo.os-utils
-  (:use demo.os-utils tupelo.core tupelo.test)
+(ns tst.finch.os-utils
+  (:use finch.os-utils tupelo.core tupelo.test)
   (:require
     [tupelo.string :as str]
     ))

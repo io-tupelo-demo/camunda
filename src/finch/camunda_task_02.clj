@@ -2,12 +2,10 @@
   (:use tupelo.core)
   (:require
     [demo.tasks :as tasks]
-    [cognitect.aws.client.api :as aws]
-    [cognitect.aws.credentials :as credentials]
     [demo.os-utils :as os]
     [finch.config :as config]
     [schema.core :as s]
-    [tupelo.schema :as tsk]
+    [tupelo.misc :as misc]
     ))
 
 (defn handler-02
@@ -20,7 +18,9 @@
       (spyx-pretty :finch.camunda-task-02/handler-02--fname fname)
       (nl))
 
-    (spit fname content-str) ; save file content locally
+    (let [cmd-str (str "ls -ldF " fname)
+          result  (misc/shell-cmd cmd-str)]
+      (spyx-pretty result))
 
     ; "global" output variable defined on the process, not in BPMN file
     (let [vars {"result" "complete"}]

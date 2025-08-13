@@ -4,7 +4,7 @@
   (:require
     [cognitect.aws.client.api :as aws]
     [cognitect.aws.credentials :as credentials]
-    [demo.os-utils :as os]
+    [finch.os-utils :as os]
     [environ.core :as environ]
     [schema.core :as s]
     [tupelo.schema :as tsk]

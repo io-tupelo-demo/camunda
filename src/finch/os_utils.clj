@@ -1,4 +1,4 @@
-(ns demo.os-utils
+(ns finch.os-utils
   (:use tupelo.core)
   (:require
     [schema.core :as s]

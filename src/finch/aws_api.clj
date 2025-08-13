@@ -1,4 +1,4 @@
-(ns demo.aws-api
+(ns finch.aws-api
   (:use tupelo.core)
   (:require
     [clojure.java.io :as io]
