@@ -14,9 +14,10 @@
   (prn :finch.camunda-init--enter)
 
   (prn :finch.camunda-init--uploading-test-834-file--begin)
-  (let [key-name "HT007992-001_20220112002237_HT000004-002-100005084.834"
-        fname    (str "data-834/" key-name)]
-    (aws-api/put-object config/s3-client config/bucket-name key-name fname))
+  (let [key   "HT007992-001_20220112002237_HT000004-002-100005084.834"
+        fname (str "data-834/" key)]
+    (spyx-pretty (vals->map key fname))
+    (aws-api/put-object config/s3-client config/bucket-name key fname))
   (prn :finch.camunda-init--uploading-test-834-file--end)
 
   (spy :finch.camunda-init--create-camunda-handlers)

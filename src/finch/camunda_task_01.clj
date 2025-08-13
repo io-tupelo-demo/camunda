@@ -14,12 +14,13 @@
   [externalTask externalTaskService]
   (prn :finch.camunda-task-01/handler-01--enter)
   ; Get a process variable (vars defined in BPMN file)
-  (let [bucket       (.getVariable externalTask "bucket")
-        key          (.getVariable externalTask "key")
+  (let [bucket      (.getVariable externalTask "bucket")
+        key         (.getVariable externalTask "key")
+        >>          (spyx-pretty (vals->map bucket key))
 
         content-str (aws-api/get-object->str config/s3-client bucket key)
-        fname        (str "/tmp/" key)]
-    (when true     ; debug
+        fname       (str "/tmp/" key)]
+    (when true ; debug
       (nl)
       (spyx-pretty :finch.camunda-task-01/handler-01--fname fname)
       (nl))
