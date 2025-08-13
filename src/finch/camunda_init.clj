@@ -2,8 +2,8 @@
       (:use tupelo.core )
       (:require
         [cognitect.aws.client.api :as aws]
-        [demo.aws-api :as aws-api]
-        [demo.os-utils :as os]
+        [finch.aws-api :as aws-api]
+        [finch.os-utils :as os]
         [finch.camunda-task-01 :as task-01]
         [finch.camunda-task-02 :as task-02]
         [finch.config :as config]
