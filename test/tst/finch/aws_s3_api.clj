@@ -1,10 +1,10 @@
 (ns tst.finch.aws-s3-api
-  (:use finch.aws-api
-        tupelo.core
+  (:use tupelo.core
         tupelo.test)
   (:require
     [clojure.test]
     [cognitect.aws.client.api :as aws]
+    [finch.aws-api :as aws-api]
     [finch.os-utils :as os]
     [finch.config :as config]
     [schema.core :as s]
@@ -25,7 +25,7 @@
 
   ; For local testing, cleanup any remaining bucket from last run
   (when (os/is-mac?)
-    (let [delete-result (delete-bucket-force config/s3-client config/bucket-name)]
+    (let [delete-result (aws-api/delete-bucket-force config/s3-client config/bucket-name)]
       ; (spyx-pretty delete-result)
       ))
 
@@ -40,7 +40,7 @@
       (is= [] buckets) ; ensure clean env
 
       ; Make a test bucket
-      (let [create-result (create-bucket config/s3-client config/bucket-name)
+      (let [create-result (aws-api/create-bucket config/s3-client config/bucket-name)
             >>            (spyx create-result)
             r2            (grab :Buckets (aws/invoke config/s3-client {:op :ListBuckets}))]
         (is (submatch? [{:Name config/bucket-name}] r2)))))
@@ -48,10 +48,10 @@
   ; Add object to S3
   (let [dummy-str (jt/->str-iso-nice (jt/now->Instant))]
     (spit tmp-file dummy-str)
-    (put-object config/s3-client config/bucket-name key-name tmp-file)
+    (aws-api/put-object config/s3-client config/bucket-name key-name tmp-file)
 
     ; Get object from S3 and verify contents
-    (let [content-str (get-object->str config/s3-client config/bucket-name key-name)]
+    (let [content-str (aws-api/get-object->str config/s3-client config/bucket-name key-name)]
       (spyx-pretty content-str)
       (is= dummy-str content-str)))
 
@@ -62,9 +62,9 @@
                                    :Key    key-name}})]
     (is= {} delete-result)
     ; Verify cannot delete the object twice (=> exception)
-    (throws? (get-object->str config/s3-client config/bucket-name key-name))
+    (throws? (aws-api/get-object->str config/s3-client config/bucket-name key-name))
 
     ; For local testing, we sometimes leave bucket & object for manual inspection
     ; using an S3 browser
     (when (os/is-mac?)
-      (delete-bucket-force config/s3-client config/bucket-name))))
+      (aws-api/delete-bucket-force config/s3-client config/bucket-name))))

@@ -4,6 +4,7 @@
     [demo.tasks :as tasks]
     [cognitect.aws.client.api :as aws]
     [cognitect.aws.credentials :as credentials]
+    [finch.aws-api :as aws-api]
     [schema.core :as s]
     [tupelo.schema :as tsk]
     ))
@@ -15,7 +16,7 @@
   (let [bucket       (.getVariable externalTask "bucket")
         key          (.getVariable externalTask "key")
 
-        content-str (get-object config/s3-client bucket-name key-name)
+        content-str (aws-api/get-object config/s3-client bucket-name key-name)
         fname        (str "/tmp/" key)]
     (when true     ; debug
       (nl)
