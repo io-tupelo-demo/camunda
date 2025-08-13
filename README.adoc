@@ -29,7 +29,7 @@
 - Go to "Camunda Cockpit" (under top right "house" symbol dropdown menu, select "Cockpit")
 - Select "Processes" in top menu, then "Load 834 files to Marklogic"
 
-- use `camunda-send.bash` to initiate process state into first state. This will use the file `data.json` to
+- use `camunda-init-state.bash` to initiate process state into first state. This will use the file `data.json` to
 initialize the variables `bucket="buck"` and `key="sample.txt"` in Camunda.
 
   - refresh camunda in browser to see marker of first state box
@@ -49,7 +49,7 @@ initialize the variables `bucket="buck"` and `key="sample.txt"` in Camunda.
   - use a spare terminal to log into camunda-qa. This will also set up ssh tunneling so that
         your laptop can connect to the camunda-qa server
   - use Camunda Modeler to load load-834-to-marklogic.bpmn script into Camunda on the camunda-qa server like step 4.
-  - From host `camunda-qa`, use `camunda-send.bash` to initiate process state into first state
+  - From host `camunda-qa`, use `camunda-init-state.bash` to initiate process state into first state
   - refresh camunda in browser to see marker of first state box
   - ***** IMPORTANT ***** Set up env vars:  `source set-env.bash`
   - On host `heron-qa`, run 2 Camunda tasks via `camunda-exec.bash` (& verify correct results)
