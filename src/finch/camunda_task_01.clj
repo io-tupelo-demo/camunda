@@ -5,6 +5,7 @@
     [cognitect.aws.client.api :as aws]
     [cognitect.aws.credentials :as credentials]
     [finch.aws-api :as aws-api]
+    [finch.config :as config]
     [schema.core :as s]
     [tupelo.schema :as tsk]
     ))
