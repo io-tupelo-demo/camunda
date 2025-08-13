@@ -75,8 +75,8 @@
                                         :Body   (io/input-stream filename)}})]
     response))
 
-(s/defn get-object
-  "Retrieve an S3 object specified by bucket and key."
+(s/defn get-object->str :- s/Str
+  "Retrieve an S3 object specified by bucket and key, returning the contents as a string."
   [s3-client :- s/Any
    bucket :- s/Str
    key :- s/Str]

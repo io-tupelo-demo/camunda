@@ -51,7 +51,7 @@
     (put-object config/s3-client config/bucket-name key-name tmp-file)
 
     ; Get object from S3 and verify contents
-    (let [content-str (get-object config/s3-client config/bucket-name key-name)]
+    (let [content-str (get-object->str config/s3-client config/bucket-name key-name)]
       (spyx-pretty content-str)
       (is= dummy-str content-str)))
 
@@ -62,7 +62,7 @@
                                    :Key    key-name}})]
     (is= {} delete-result)
     ; Verify cannot delete the object twice (=> exception)
-    (throws? (get-object config/s3-client config/bucket-name key-name))
+    (throws? (get-object->str config/s3-client config/bucket-name key-name))
 
     ; For local testing, we sometimes leave bucket & object for manual inspection
     ; using an S3 browser

@@ -1,7 +1,5 @@
 (ns demo.tasks
-  (:use demo.core
-        tupelo.core
-        tupelo.test)
+  (:use tupelo.core)
   (:require
     [demo.os-utils :as os]
     [environ.core :as environ]

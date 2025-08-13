@@ -1,7 +1,5 @@
 (ns tst.demo.core-debug
-  (:use demo.core
-        tupelo.core
-        tupelo.test)
+  (:use tupelo.core tupelo.test)
   (:import
     [org.camunda.bpm.client ExternalTaskClient]))
 
