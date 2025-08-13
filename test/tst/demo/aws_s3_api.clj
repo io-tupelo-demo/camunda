@@ -52,7 +52,7 @@
 (def tmp-file "/tmp/dummy.txt")
 
 (verify
-  (when false ; enable for debug prints
+  (when true ; enable for debug prints
     (spyx s3-keys)
     (spyx s3-creds-provider)
     (spyx s3-client-opts)
