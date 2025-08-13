@@ -12,6 +12,9 @@
 ; (def ^:dynamic *camunda-url* "http://localhost:8080/engine-rest")
 (def ^:dynamic *async-response-timeout-millis* 9999)
 
+(def ip-addr-camunda-qa  "10.128.4.224")
+(def ^:dynamic *camunda-url* (str "http://" ip-addr-camunda-qa ":8080/engine-rest"))
+
 ; #todo #awt write macro for generic input/output variables
 (comment
   (defn handler-01
