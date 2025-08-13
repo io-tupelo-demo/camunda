@@ -1,7 +1,6 @@
 (ns finch.camunda-task-02
   (:use tupelo.core)
   (:require
-    [demo.os-utils :as os]
     [demo.tasks :as tasks]
     [finch.aws-api :as aws-api]
     [finch.config :as config]
