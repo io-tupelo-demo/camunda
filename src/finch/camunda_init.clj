@@ -1,14 +1,27 @@
 (ns finch.camunda-init
       (:use tupelo.core )
       (:require
+        [cognitect.aws.client.api :as aws]
+        [demo.aws-api :as aws-api]
+        [demo.os-utils :as os]
         [finch.camunda-task-01 :as task-01]
         [finch.camunda-task-02 :as task-02]
+        [finch.config :as config]
         ))
 
-(prn :finch.camunda-init)
 (defn -main
   [& args]
-  (spy :main--enter)
+  (prn :finch.camunda-init--enter)
+
+  (prn :finch.camunda-init--uploading-test-834-file--begin)
+  (let [key-name "data-834/HT007992-001_20220112002237_HT000004-002-100005084.834"
+        fname    (str "data-834/" key-name)]
+    (aws-api/put-object config/s3-client config/bucket-name key-name fname))
+  (prn :finch.camunda-init--uploading-test-834-file--end)
+
+  (spy :finch.camunda-init--create-camunda-handlers)
   (task-01/create)
   (task-02/create)
-  (spy :main--leave))
+
+  (spy :finch.camunda-init--leave)
+  )

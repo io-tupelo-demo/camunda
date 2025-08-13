@@ -1,0 +1,3 @@
+{"businessKey":"FinchDemoKey", 
+ "variables": {"bucket": {"value":"lambdawerk-qa-testcases-and-data", "type":"string"},
+               "key":    {"value":"data-834/HT007992-001_20220112002237_HT000004-002-100005084.834", "type":"string"}}}
