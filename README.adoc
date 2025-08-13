@@ -18,7 +18,7 @@
 4. Test Camunda
   - use `camunda-start.bash` to start camunda podman engine (or `camunda-start-docker.bash`)
   - open on Camunda Modeler from Mac Launcher
-  - load `demo.bpmn` file, then "launch" (rocketship - lower left corner) into camunda engine
+  - load `load-834-to-marklogic.bpmn` file, then "launch" (rocketship - lower left corner) into camunda engine
   - use `camunda-send.bash` to initiate process state into first state
   - refresh camunda in browser to see marker of first state box
   - Run 2 Camunda tasks via `camunda-exec.bash` (& verify correct results)
@@ -36,7 +36,7 @@
   - at command line, do `source set-env.bash` to set env vars
   - use a spare terminal to log into camunda-qa. This will also set up ssh tunneling so that
         your laptop can connect to the camunda-qa server
-  - use Camunda Modeler to load demo.bpmn script into Camunda on the camunda-qa server like step 4.
+  - use Camunda Modeler to load load-834-to-marklogic.bpmn script into Camunda on the camunda-qa server like step 4.
   - use `camunda-send.bash` to initiate process state into first state
   - refresh camunda in browser to see marker of first state box
   - Run 2 Camunda tasks via `camunda-exec.bash` (& verify correct results)
