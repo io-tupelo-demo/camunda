@@ -22,13 +22,16 @@
 
 
 4. Test Camunda
-  - use `camunda-start.bash` to start camunda podman engine (or `camunda-start-docker.bash`)
-  - open on Camunda Modeler from Mac Launcher
-  - load `load-834-to-marklogic.bpmn` file, then "launch" (rocketship - lower left corner) into camunda engine
-  - Load Camunda browser in Chrome at URL  `http://localhost:8080/camunda`  (login: is admin/admin)
-  - Go to "Camunda Cockpit" (under top right "house" symbol dropdown menu, select "Cockpit")
-  - Select "Processes" in top menu, then "Load 834 files to Marklogic"
-  - use `camunda-send.bash` to initiate process state into first state
+- use `camunda-start.bash` to start camunda podman engine (or `camunda-start-docker.bash`)
+- open on Camunda Modeler from Mac Launcher
+- load `load-834-to-marklogic.bpmn` file, then "launch" (rocketship - lower left corner) into camunda engine
+- Load Camunda browser in Chrome at URL  `http://localhost:8080/camunda`  (login: is admin/admin)
+- Go to "Camunda Cockpit" (under top right "house" symbol dropdown menu, select "Cockpit")
+- Select "Processes" in top menu, then "Load 834 files to Marklogic"
+
+- use `camunda-send.bash` to initiate process state into first state. This will use the file `data.json` to
+initialize the variables `bucket="buck"` and `key="sample.txt"` in Camunda.
+
   - refresh camunda in browser to see marker of first state box
   - Run 2 Camunda tasks via `camunda-exec.bash` (& verify correct results)
   - Must use Ctrl-C to terminate since Camunda has non-daemon thread in JVM
