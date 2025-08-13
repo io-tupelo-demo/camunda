@@ -24,3 +24,20 @@
   - Run 2 Camunda tasks via `camunda-exec.bash` (& verify correct results)
   - Must use Ctrl-C to terminate since Camunda has non-daemon thread in JVM
 
+5. Testing on Linux in QA environment
+  - login to "heron-qa"
+  - create a file `set-env.bash` like
+
+      export ACCESS_KEY="AKIAZSDFLKF87098DFFY"
+      export SECRET_KEY="sdlfkjoiwueerlkjsdfljsfdlsdfkljdslX4ziXT"
+      export IP_ADDR_CAMUNDA="10.128.4.224"
+
+  - at command line, do `source set-env.bash` to set env vars
+  - use a spare terminal to log into camunda-qa. This will also set up ssh tunneling so that
+        your laptop can connect to the camunda-qa server
+  - use Camunda Modeler to load demo.bpmn script into Camunda on the camunda-qa server like step 4.
+  - use `camunda-send.bash` to initiate process state into first state
+  - refresh camunda in browser to see marker of first state box
+  - Run 2 Camunda tasks via `camunda-exec.bash` (& verify correct results)
+  - Must use Ctrl-C to terminate since Camunda has non-daemon thread in JVM
+
