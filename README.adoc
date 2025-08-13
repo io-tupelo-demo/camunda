@@ -15,6 +15,12 @@
 3. Run tests via `clojure -X:test` (alternate: "clojure -M:test-refresh")
   - Runs normal S3 unit tests
 
+- For local testing with Minio, create a file `set-env.bash` like
+
+        export IP_ADDR_CAMUNDA="127.0.0.1"  # or actual ip address in qa or prod
+        export IP_ADDR_MARKLOGIC="127.0.0.1"  # or actual ip address in qa or prod
+
+
 4. Test Camunda
   - use `camunda-start.bash` to start camunda podman engine (or `camunda-start-docker.bash`)
   - open on Camunda Modeler from Mac Launcher
@@ -29,10 +35,10 @@
 
 5. Testing on Linux in QA environment
   - login to "heron-qa"
-  - create a file `set-env.bash` like
+- create a file `set-env.bash` like
 
       export ACCESS_KEY="AKIAZSDFLKF87098DFFY"
-      export SECRET_KEY="sdlfkjoiwueerlkjsdfljsfdlsdfkljdslX4ziXT"
+      export SECRET_KEY="sdlfkjoiwueerlkj23987sdf9234lkjljdslX4ziXT"
       export IP_ADDR_CAMUNDA="10.128.4.224"
       export IP_ADDR_MARKLOGIC="10.128.4.246"
 
@@ -40,9 +46,10 @@
   - use a spare terminal to log into camunda-qa. This will also set up ssh tunneling so that
         your laptop can connect to the camunda-qa server
   - use Camunda Modeler to load load-834-to-marklogic.bpmn script into Camunda on the camunda-qa server like step 4.
-  - use `camunda-send.bash` to initiate process state into first state
+  - From host `camunda-qa`, use `camunda-send.bash` to initiate process state into first state
   - refresh camunda in browser to see marker of first state box
-  - Run 2 Camunda tasks via `camunda-exec.bash` (& verify correct results)
+  - ***** IMPORTANT ***** Set up env vars:  `source set-env.bash`
+  - On host `heron-qa`, run 2 Camunda tasks via `camunda-exec.bash` (& verify correct results)
   - Must use Ctrl-C to terminate since Camunda has non-daemon thread in JVM
 
 6. Marklogic web interface:
@@ -54,6 +61,4 @@
 image::resources/images/snap01.png[Query Console Example]
 
 - Note how the document names are from your laptop disk. You can select files and delete them.
-
-
 
