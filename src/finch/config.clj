@@ -36,5 +36,9 @@
                                                        :port     19000})))
 (def s3-client (aws/client s3-client-opts))
 
-
+(def bucket-name
+  (if (os/is-linux?)
+    "lambdawerk-qa-testcases-and-data" ; must use pre-existing bucket on heron-qa
+    ; else
+    "dummy")) ; for mac testing
 
