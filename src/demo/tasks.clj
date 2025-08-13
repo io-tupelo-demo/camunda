@@ -3,17 +3,20 @@
         tupelo.core
         tupelo.test)
   (:require
+    [demo.os-utils :as os]
+    [environ.core :as environ]
     [schema.core :as s]
     [tupelo.schema :as tsk]
     )
   (:import
     [org.camunda.bpm.client ExternalTaskClient]))
 
-; (def ^:dynamic *camunda-url* "http://localhost:8080/engine-rest")
-(def ^:dynamic *async-response-timeout-millis* 9999)
+(def ip-addr-camunda (if (os/is-mac?)
+                       "localhost"
+                       (environ/env :ip-addr-camunda)))
 
-(def ip-addr-camunda-qa  "10.128.4.224")
-(def ^:dynamic *camunda-url* (str "http://" ip-addr-camunda-qa ":8080/engine-rest"))
+(def ^:dynamic *camunda-url* (str "http://" ip-addr-camunda ":8080/engine-rest"))
+(def ^:dynamic *async-response-timeout-millis* 9999)
 
 ; #todo #awt write macro for generic input/output variables
 (comment
