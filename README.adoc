@@ -31,6 +31,7 @@
       export ACCESS_KEY="AKIAZSDFLKF87098DFFY"
       export SECRET_KEY="sdlfkjoiwueerlkjsdfljsfdlsdfkljdslX4ziXT"
       export IP_ADDR_CAMUNDA="10.128.4.224"
+      export IP_ADDR_MARKLOGIC="10.128.4.246"
 
   - at command line, do `source set-env.bash` to set env vars
   - use a spare terminal to log into camunda-qa. This will also set up ssh tunneling so that
