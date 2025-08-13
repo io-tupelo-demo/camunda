@@ -5,13 +5,10 @@
   (:require
     [clojure.test]
     [cognitect.aws.client.api :as aws]
-    [cognitect.aws.credentials :as credentials]
-    [environ.core :as environ]
     [demo.os-utils :as os]
     [finch.config :as config]
     [schema.core :as s]
     [tupelo.java-time :as jt]
-    [tupelo.string :as str]
     ))
 
 (def bucket-name
