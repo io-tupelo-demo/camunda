@@ -9,7 +9,7 @@
   (:import
     [org.camunda.bpm.client ExternalTaskClient]))
 
-(def ^:dynamic *camunda-url* "http://localhost:8080/engine-rest")
+; (def ^:dynamic *camunda-url* "http://localhost:8080/engine-rest")
 (def ^:dynamic *async-response-timeout-millis* 9999)
 
 ; #todo #awt write macro for generic input/output variables
