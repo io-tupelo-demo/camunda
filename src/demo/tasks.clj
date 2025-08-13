@@ -1,7 +1,7 @@
 (ns demo.tasks
   (:use tupelo.core)
   (:require
-    [demo.os-utils :as os]
+    [finch.os-utils :as os]
     [environ.core :as environ]
     [schema.core :as s]
     [tupelo.schema :as tsk]
