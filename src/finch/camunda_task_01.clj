@@ -16,7 +16,7 @@
   (let [bucket       (.getVariable externalTask "bucket")
         key          (.getVariable externalTask "key")
 
-        content-str (aws-api/get-object config/s3-client bucket-name key-name)
+        content-str (aws-api/get-object->str config/s3-client bucket-name key-name)
         fname        (str "/tmp/" key)]
     (when true     ; debug
       (nl)
