@@ -28,11 +28,13 @@
       (nl))
 
     (let [c1 (str "emerald x12n-to-xml " fname-834 \space fname-xml)
-          c2 (str "ls -ldF " fname-834)]
-      (spyx c1)
-      (spyx c2)
+          c2 (str "ls -ldF " fname-834)
+          c3 (str "ls -ldF " fname-xml)
+          ]
       (spyx-pretty (misc/shell-cmd c1))
-      (spyx-pretty (misc/shell-cmd c2)))
+      (spyx-pretty (misc/shell-cmd c2))
+      (spyx-pretty (misc/shell-cmd c3))
+      )
 
     ; "global" output variable defined on the process, not in BPMN file
     (let [vars {"result" "complete"}]
