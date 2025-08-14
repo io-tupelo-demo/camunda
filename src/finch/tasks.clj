@@ -1,4 +1,4 @@
-(ns demo.tasks ; #todo convert
+(ns finch.tasks ; #todo convert
   (:use tupelo.core)
   (:require
     [finch.config :as config]
@@ -9,9 +9,7 @@
   (:import
     [org.camunda.bpm.client ExternalTaskClient]))
 
-(def ip-addr-camunda (if (os/is-mac?)
-                       "localhost"
-                       (config/ip-addr-camunda)))
+(def ip-addr-camunda (config/ip-addr-camunda))
 
 (def ^:dynamic *camunda-url* (str "http://" ip-addr-camunda ":8080/engine-rest"))
 (def ^:dynamic *async-response-timeout-millis* 9999)

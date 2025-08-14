@@ -10,14 +10,24 @@
     [tupelo.schema :as tsk]
     ))
 
+; *** WARNING *** note inconsistent naming of both keys
 (defn aws-access-key
   [] (environ/env :access-key))
+; *** WARNING *** note inconsistent naming of both keys
 (defn aws-secret-key
   [] (environ/env :secret-key))
+
 (defn ip-addr-camunda
-  [] (environ/env :ip-addr-camunda))
+  []
+  (if (os/is-mac?)
+    "localhost"
+    (environ/env :ip-addr-camunda)))
+
 (defn ip-addr-marklogic
-  [] (environ/env :ip-addr-marklogic))
+  []
+  ; Always prefer the env var value if present, else default to localhost
+  (with-exception-default "localhost"
+    (environ/env :ip-addr-marklogic)))
 
 (def s3-keys
   (if (not (os/is-linux?))
@@ -36,7 +46,7 @@
 (def s3-creds-provider (credentials/basic-credentials-provider s3-keys))
 (def s3-client-opts
   (cond-it-> {:api                  :s3
-              :region               "us-east-1" ; any legal value accepted
+              :region               "us-east-1" ; for minio, any legal value accepted
               :credentials-provider s3-creds-provider}
 
     ; required for local testing with minio
