@@ -40,7 +40,7 @@
                            ["/usr/bin/mlcp  import"
                             "-host" (config/ip-addr-marklogic) "-port 8000"
                             "-username admin  -password admin"
-                            "-input_file_path ./data-xml "]))]
+                            "-input_file_path /tmp/data-xml "]))]
         (spyx cmd-import)
         (spyx-pretty (misc/shell-cmd cmd-import)))
       )
