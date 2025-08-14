@@ -27,9 +27,12 @@
         (vals->map fname-834 fname-xml))
       (nl))
 
-    (let [r1     (misc/shell-cmd (str "emerald  x12n-to-xml " fname-834 fname-xml))
-          result (misc/shell-cmd (str "ls -ldF " fname-834))]
-      (spyx-pretty result))
+    (let [c1 (str/join \space "emerald" "x12n-to-xml" fname-834 fname-xml)
+          c2 (str "ls -ldF " fname-834)]
+      (spyx c1)
+      (spyx c2)
+      (spyx-pretty (misc/shell-cmd c1))
+      (spyx-pretty (misc/shell-cmd c2)))
 
     ; "global" output variable defined on the process, not in BPMN file
     (let [vars {"result" "complete"}]
