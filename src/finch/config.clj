@@ -10,6 +10,15 @@
     [tupelo.schema :as tsk]
     ))
 
+(defn aws-access-key
+  [] (environ/env :access-key))
+(defn aws-secret-key
+  [] (environ/env :secret-key))
+(defn ip-addr-camunda
+  [] (environ/env :ip-addr-camunda))
+(defn ip-addr-marklogic
+  [] (environ/env :ip-addr-marklogic))
+
 (def s3-keys
   (if (not (os/is-linux?))
     (do   ; laptop testing env - minio default creds
@@ -21,8 +30,8 @@
     ; *** WARNING *** note inconsistent naming of both keys
     (do
       (prn :linux-testing--s3-via-environ)
-      {:access-key-id     (environ/env :access-key)
-       :secret-access-key (environ/env :secret-key)})))
+      {:access-key-id     (aws-access-key)
+       :secret-access-key (aws-secret-key)})))
 
 (def s3-creds-provider (credentials/basic-credentials-provider s3-keys))
 (def s3-client-opts

@@ -28,12 +28,17 @@
       (nl))
 
     (let [c1 (str "emerald x12n-to-xml " fname-834 \space fname-xml)
-          c2 (str "ls -ldF " fname-834)
-          c3 (str "ls -ldF " fname-xml)
+          c2 (str "ls -ldF " fname-834 " " fname-xml)
           ]
       (spyx-pretty (misc/shell-cmd c1))
       (spyx-pretty (misc/shell-cmd c2))
-      (spyx-pretty (misc/shell-cmd c3))
+      (spyx-pretty (misc/shell-cmd "rm -rf   /tmp/data-xml"))
+      (spyx-pretty (misc/shell-cmd "mkdir -p /tmp/data-xml"))
+      (spyx-pretty (misc/shell-cmd "mv " fname-xml " /tmp/data-xml"))
+      (spyx-pretty (misc/shell-cmd (str
+            "/usr/bin/mlcp  import  -host "  (config/ip-addr-marklogic) "
+            -port 8000  -username admin  -password admin
+            -input_file_path ./data-xml ")))
       )
 
     ; "global" output variable defined on the process, not in BPMN file
