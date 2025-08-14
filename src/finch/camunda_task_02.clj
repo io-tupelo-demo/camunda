@@ -42,9 +42,13 @@
                            ["/usr/bin/mlcp  import"
                             "-host" (config/ip-addr-marklogic) "-port 8000"
                             "-username admin  -password admin"
-                            "-input_file_path /tmp/data-xml "]))]
-        (spyx cmd-import)
-        (spyx-pretty (misc/shell-cmd cmd-import)))
+                            "-input_file_path /tmp/data-xml "]))
+            >>         (spyx cmd-import)
+            r6     (misc/shell-cmd cmd-import)]
+        (prn :mlcp-import-exit (:exit r6))
+        (prn :mlcp-import-result )
+        (println (:out r6))
+        )
       )
 
     ; "global" output variable defined on the process, not in BPMN file
