@@ -8,7 +8,5 @@
 (verify
   (is= "sample-file-834.xml"
     (filename-834->xml "sample-file.834"))
-
-  (shell-exec-and-verify "doofus")
   )
 

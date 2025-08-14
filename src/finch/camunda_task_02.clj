@@ -15,18 +15,6 @@
     (str/replace it "." "-")
     (str it ".xml")))
 
-(s/defn shell-exec-and-verify
-  [cmd :- s/Str]
-  (let [result (misc/shell-cmd cmd)]
-    (let [exit (:exit result)
-          out  (:out result)]
-    (when-not (= 0 exit)
-        (prn :shell-exec-and-verify--cmd cmd)
-        (prn :shell-exec-and-verify--exit exit)
-        (prn :shell-exec-and-verify--out out)
-        (throw (ex-info "shell-exec-and-verify: error"
-                 (ex-info (vals->map cmd exit out))))))))
-
 (defn handler-02
   [externalTask externalTaskService]
   (prn :finch.camunda-task-02/handler-02--enter)
@@ -44,11 +32,11 @@
           c3 "rm -rf   /tmp/data-xml"
           c4 "mkdir -p /tmp/data-xml"
           c5 (str "mv " fname-xml " /tmp/data-xml")]
-      (spyx-pretty (misc/shell-cmd c1))
-      (spyx-pretty (misc/shell-cmd c2))
-      (spyx-pretty (misc/shell-cmd c3 ))
-      (spyx-pretty (misc/shell-cmd c4 ))
-      (spyx-pretty (misc/shell-cmd c5 ))
+      (misc/shell-cmd (spyx c1))
+      (misc/shell-cmd (spyx c2))
+      (misc/shell-cmd (spyx c3))
+      (misc/shell-cmd (spyx c4))
+      (misc/shell-cmd (spyx c5))
       (let [cmd-import (str/whitespace-collapse
                          (str/join \space
                            ["/usr/bin/mlcp  import"

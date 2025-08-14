@@ -7,8 +7,6 @@
     ))
 
 (verify
-  (let [result (misc/shell-cmd "date")]
-    (spyx-pretty result)
-
-    ))
+  (is true)
+  )
 
