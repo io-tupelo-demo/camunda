@@ -37,9 +37,9 @@
       (spyx-pretty (misc/shell-cmd (str "mv " fname-xml " /tmp/data-xml")))
       (let [cmd-import (str/whitespace-collapse
                          (str/join \space
-                           ["/usr/bin/mlcp  import  -host "
-                            (config/ip-addr-marklogic)
-                            "-port 8000  -username admin  -password admi"
+                           ["/usr/bin/mlcp  import"
+                            "-host" (config/ip-addr-marklogic) "-port 8000"
+                            "-username admin  -password admin"
                             "-input_file_path ./data-xml "]))]
         (spyx cmd-import)
         (spyx-pretty (misc/shell-cmd cmd-import)))
