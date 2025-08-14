@@ -1,0 +1,1013 @@
+*** DAILY ***
+  __ Effort Tracker - fill out daily
+
+ToDo:
+  aws training resume
+  __ finish mac setup: next-tab
+  __ practice ssh tunnel, bastion host
+  __ practice AWS in general, use Cognitect lib
+        s3, sqs, lambda
+  __ look at Malli
+  __ how to start repl on MCNA network? tricks?
+  __ practice ssh tunnelling
+  __ try "ripgrep" (via homebrew)
+
+2025-08-08
+  S3 testing error:
+    (create-bucket s3-client bucket-name) => {:Error {:Code "AccessDenied", :CodeAttrs {}, 
+        :Message "User: arn:aws:iam::626230718468:user/qa-automation is not authorized to perform: 
+            s3:CreateBucket on resource: \"arn:aws:s3:::instants\" because no identity-based policy allows 
+            the s3:CreateBucket action", 
+        :MessageAttrs {}, :RequestId "48XR2YQARNEPSD93", :RequestIdAttrs {}, 
+        :HostId "fAozkTp6UHRKafD/OHNreuU8WmXSldP/yU4IgUyHAnZJZAY80Eq9WPNZAIDFABCgfI+pBLY9+3E=", 
+        :HostIdAttrs {}}, :ErrorAttrs {}, :cognitect.aws.http/status 403, 
+        :cognitect.anomalies/category :cognitect.anomalies/forbidden, 
+        :cognitect.aws.error/code "AccessDenied"}
+
+  now:
+    {:Error {:Code "AccessDenied", :CodeAttrs {}, :Message "Access Denied", :MessageAttrs {}, 
+    :RequestId "WZ7ZTPNV3R377AFM", :RequestIdAttrs {}, 
+    :HostId "PCxNYt6T9BICM4i3mfVTgYQi7aCALJ2ps1BeMTipyXZ/IBYQWuXE/WFs2hjIPrYHzEvMRMSNv/M=", 
+    :HostIdAttrs {}}, :ErrorAttrs {}, :cognitect.aws.http/status 403, 
+    :cognitect.anomalies/category :cognitect.anomalies/forbidden, :cognitect.aws.error/code "AccessDenied"}
+
+
+2025-08-07 sprint planning
+  EDI-708 next task for me
+
+2025-08-04 error trying to convert 834 file to xlm
+  ~/work/sample-834 > go-834-xml.bash
+    ./bin/emerald  x12n-to-xml  HT007992-001_20220112002237_HT000004-002-100005084.834   tmp2.xml
+    Error: cannot find SEF file for version/release/industry-id-code 005010X220A1 transaction set 834 in any of the directories searched (#P"/tmp/sef/default/")
+
+  got SEF files from Andrew Sengal for Emerald (LISP) executable. Need to install in /tmp/SEF, where 
+  emerald can find them. They are specs on how to interpret the X12 files (aka 834 files).  Note that
+  a reboot of the Macbook will clear out all files in /tmp (except dirs).
+
+  Loaded above Utah 834 file into Marklogic. File name is full unix pathname.
+
+2025-07-22
+    /Users/athom555/work/sample-834/bin/emerald
+
+2025-07-22
+  Camunda:
+    > Start Camunda Modeler from Mac LaunchPad
+    > ./camunda-start.bash        # launches Camunda container in Podman; note UHC repo indirection
+    > Camunda web console:  http://localhost:8080/camunda    creds: demo/demo
+    > Camunda Modeler: to deploy process into Camunda server
+    > Camunda web console: to see process is present
+    > ./go.bash to start process with variable values       # ./camunda-send.bash - alternate method
+    > Camunda web console: see press waiting on first step
+    > ct    # run clojure tests to subscribe to Camunda topics and process 2 steps
+
+
+2025-07-18
+  ~/.ssh/config => dev-edi-marklogic-01
+  > ssh athompson@dev-edi-marklogic-01
+  > scp <file> athompson@dev-edi-marklogic-01:
+
+  # vvv works using ssh tunnel to ^^^ (requires java 11 or get exception)
+  ~/expr/marklogic > go-import.bash  
+
+2025-07-08
+  Installing Docker CLI on macOS without Docker Desktop
+    brew install docker docker-credential-helper
+    brew install colima         # Linux VM
+    colima start
+    docker context ls
+    docker run hello-world
+    brew services start colima
+    brew install docker-compose
+    mkdir -p ~/.docker/cli-plugins
+    mkdir -p ~/.docker/cli-plugins\n   ln -sfn /opt/homebrew/opt/docker-compose/bin/docker-compose ~/.docker/cli-plugins/docker-compose
+    d  ~/.docker/**/*
+    docker run docker/whalesay
+    docker run docker/whalesay  cowsay boo
+
+2025-07-08
+  Indi, Dhananjay -
+  Highlights over last year
+    Identify/Repair missing Encounter Response files into database
+    Converted EDI logs to Datadog
+    Converting tests to run locally using Docker/Podman for S3/Camunda/MarkLogic
+
+2025-07-07
+  ~/work > find . -type f  -exec  grep mlcp-import {} \;
+      <bpmn:serviceTask id="Task_08auhx3" name="Load File Into MarkLogic" camunda:asyncBefore="true" camunda:asyncAfter="true" camunda:type="external" camunda:topic="mlcp-import">
+      <bpmn:serviceTask id="Task_0p129gv" name="Write XML Document to MarkLogic" camunda:modelerTemplate="com.lambdawerk.bpm-task.mlcp-import" camunda:asyncBefore="true" camunda:asyncAfter="true" camunda:type="external" camunda:topic="mlcp-import">
+  ### mlcp-import - Import files into MarkLogic with mlcp
+  (ns template-executor.task.mlcp-import
+  (task/define mlcp-import
+      <bpmn:serviceTask id="upload-to-marklogic" camunda:asyncBefore="true" camunda:asyncAfter="true" camunda:type="external" camunda:topic="mlcp-import">
+      <bpmn:serviceTask id="import-xml-file-into-marklogic" camunda:asyncBefore="true" camunda:asyncAfter="true" camunda:type="external" camunda:topic="mlcp-import">
+      <bpmn:serviceTask id="load-loop2000s-into-marklogic" name="load-loop2000s-into-marklogic" camunda:asyncBefore="true" camunda:asyncAfter="true" camunda:type="external" camunda:topic="mlcp-import">
+      <bpmn:serviceTask id="load-xml-file-into-marklogic" camunda:asyncBefore="true" camunda:asyncAfter="true" camunda:type="external" camunda:topic="mlcp-import">
+      <bpmn:serviceTask id="load-xml-file-into-marklogic" camunda:asyncBefore="true" camunda:asyncAfter="true" camunda:type="external" camunda:topic="mlcp-import">
+    ; was:  camunda:modelerTemplate="com.lambdawerk.bpm-task.mlcp-import"
+    ; was:  camunda:modelerTemplate="com.lambdawerk.bpm-task.mlcp-import"
+    ; was:  camunda:modelerTemplate="com.lambdawerk.bpm-task.mlcp-import"
+    ; was:  camunda:modelerTemplate="com.lambdawerk.bpm-task.mlcp-import"
+    ; was:  camunda:modelerTemplate="com.lambdawerk.bpm-task.mlcp-import"
+
+  ~/work > find . -type f  -exec  grep -l mlcp-import {} \;
+  ./template-executor/bpm-processes/MLCPTest.bpmn
+  ./template-executor/bpm-processes/ExecutorDemo.bpmn
+  ./template-executor/README.md
+  ./template-executor/src/template_executor/task/mlcp_import.clj
+  ./finch/bpm-processes/Finch/LA.ImportCCNFile.bpmn
+  ./finch/bpm-processes/Finch/MCS.ImportEnrollmentFile.bpmn
+  ./finch/bpm-processes/Finch/Import834File.bpmn
+  ./finch/bpm-processes/Finch/NE.ImportSupplementalFile.bpmn
+  ./finch/bpm-processes/Finch/MCS.ImportCobFile.bpmn
+  ./finch/bpm-processes/Finch/task.clj
+  
+  ~/work > d **/*mlcp-import*
+  zsh: no match
+  ~/work > d **/*mlcp_import*
+  -rw-------  1 athom555  staff  8073 May 26 12:58 template-executor/src/template_executor/task/mlcp_import.clj
+
+2025-07-02
+  integrate.io looks to have good tools for x12 parsing & transformation
+
+  hostname => dev-edi-marklogic-01.aws.mcna.net
+  mlcp.sh  => /usr/lib/mlcp-11.3.1/bin/mlcp.sh
+
+2025-07-01
+  stedi.com   athom555@mcna.net  #StupidStedi25a
+
+2025-06-23
+  Need to use local UHC docker mirror - cannot access dockerhub directly
+    Works:  podman pull docker.repo1.uhc.com/camunda/camunda-bpm-platform:latest
+    Fails:  podman pull                      camunda/camunda-bpm-platform:latest 
+    Can automate use of UHC mirror:
+      > podman machine ssh
+      core@localhost:~$ whoami
+      core
+      core@localhost:~$ mkdir -p .config/containers
+      core@localhost:~$ echo 'unqualified-search-registries = ["docker.repo1.uhc.com"]'  > .config/containers/registries.conf
+      core@localhost:~$ cat .config/containers/registries.conf
+      unqualified-search-registries = ["docker.repo1.uhc.com"]
+      core@localhost:~$ exit
+
+2025-06-20
+standup
+  using local camunda got forms working 2 ways, plus normal vars (dockerized)
+  got local minio (S3 server) working (don't even need docker)
+    can use from cmdline, clojure (+ web client)
+  will need 834 file for test processing
+    could try to reverse-engineer a fake one (would rather not!)
+    Hans: should be some 834 files on QA S3
+  Hans: QA server (which one?) has sample 834 files
+
+2025-06-17
+  brew install minio/stable/minio
+  brew install minio/stable/mc
+  add to ~/.bashrc (due to MS Teams)
+    export MINIO_ADDRESS="localhost:19000"
+    export MINIO_CONSOLE_ADDRESS="localhost:19001"
+
+  Minio credentials:  minioadmin/minioadmin
+
+  create an alias "local" that points to the minio server
+    mc alias set local http://127.0.0.1:19000 minioadmin minioadmin
+
+  make a bucket on "local"
+    mc mb local/buck
+  copy local file to "local/buck"
+    mc cp data.json local/buck
+  copy file from "local/buck" to $PWD (with rename)
+    mc cp local/buck/data.json data2.json
+  copy local file to nested remote dir
+    mc cp data.json local/buck/a/b/c/data.json
+  list all files in a bucket
+    mc ls -r local/buck
+    [2025-06-19 20:47:12 PDT]   153B STANDARD a/b/c/data.json
+    [2025-06-17 11:21:10 PDT]   153B STANDARD data.json
+  copy nested remote file 
+    mc cp local/buck/a/b/c/data.json data3.json
+
+
+2025-06-12
+  working with QA camunda server, poking - trial/error
+    how test S3 access? MinIO
+    how get sample 834 files? (all plans: ime, arkmed, idmed, utmed, txmed/txchip, flmed, ...
+    camunda -> clj/executor -> bash -> clj/finch (or emerald) ... & reverse
+      also sed/awk
+
+2025-06-11 AdminAccess => Privileges (app) for root access
+
+2025-06-11 Finch EDI-650
+  working on bpm-processes/Finch/Import834File.bpmn 
+
+standup
+  After talking with Colin, realized that template-executor/bpm-task-executor are much
+  more difficult than I thought. Also, every change requires a deployment to the QA env to
+  test (very slow). For the future, would STRONGLY suggest switching to Java
+  client provided by Camunda.
+
+2025-05-28 need ssh connection to `camunda-qa`
+
+2025-05-15
+  /usr/lib/<app>/marklogic
+
+2025-05-13 
+  config is missing 'content-database' => nil => marklogic-admin.database/add-or-update-indexes
+    :url "http://dev-edi-marklogic-01:8002/manage/v2/databases/null/properties",
+
+2025-05-12 marklogic => admin/admin
+
+2025-05-09 New servers:
+  dev-edi-services-01  
+  dev-edi-marklogic-01
+
+2025-05-08
+  Raj:  source: /usr/lib/finch/marklogic/...
+    ask Mohan re QA experimtal marklogic
+  ask Mohan re
+    > ping qa-edi-marklogic-01.aws.mcna.net
+    ping: qa-edi-marklogic-01.aws.mcna.net: Name or service not known
+
+2025-05-06 
+  alternate config file to /etc/lambdawerk/config.edn
+  ~grice/.lambdawerk-config.edn
+
+2025-04-30 EDI-708 marklogic-admin
+Q's: 
+  Can't find lambdawerk.common
+
+2025-04-28 EDI-708 marklogic-admin
+  Looks like marklogic-admin starting to behave after latest heron deployment
+    re shared environment on heron-qa: 
+      how avoid interference with other tasks?
+      is it OK to:
+        stop/start heron and/or marklogic?
+        redeploy heron and/or marklogic-admin?
+        modify heron and/or marklogic-admin for debug/testing?
+
+  DBG:
+    :dbg--config-18-dir "/usr/lib/heron-core/core-api"   ***** from shell script -d <dir> *****
+    [FATAL] 2025-04-28T20:11:03+0000 Stopping because of uncaught Exception : #error {
+     :cause "throw+: {:type :marklogic-admin.config/missing-config-file, :filename \"config.edn\"}"
+     :data {:type :marklogic-admin.config/missing-config-file, :filename "config.edn"}
+     :via
+     [{:type clojure.lang.ExceptionInfo
+       :message "throw+: {:type :marklogic-admin.config/missing-config-file, :filename \"config.edn\"}"
+       :data {:type :marklogic-admin.config/missing-config-file, :filename "config.edn"}
+       :at [slingshot.support$stack_trace invoke "support.clj" 201]}]
+     :trace
+     [[slingshot.support$stack_trace invoke "support.clj" 201]
+      [marklogic_admin.config$read_config invokeStatic "config.clj" 21]
+      [marklogic_admin.config$read_config invoke "config.clj" 17]
+
+
+    :database-deploy-423--dir       "/usr/lib/heron-core/core-api"
+    :database-deploy-423--config    nil
+
+2025-04-25 EDI-708 marklogic-admin
+  /etc/lambdawerk/config.edn
+  ssh athompson@heron-qa      # works
+    sudo su dkirk16 
+    cd ~dkirk16/bin
+    export AWS_JAVA_V1_DISABLE_DEPRECATION_ANNOUNCEMENT=true        # disable error msg
+    >>> uncomment the call 1 of 4 to:  `marklogic-admin ...`
+    ./update-heron.sh
+
+2025-04-24 EDI-708
+  /home/grice/qa-scripts/update-heron.sh    ***** WRONG ONE! *****
+  ssh athompson@heron-qa      # works
+  tree -dfi -L 3 -I "dev|etc|proc|sys|tmp|usr|var" / 
+    /home
+    /opt
+    /shared
+
+
+2025-04-21 EDI-708
+  need access to `heron-qa` server
+    check with William Dixon
+
+2025-04-04 Me:  Switch to EDI-471. Branch:  240407-alan-edi-471-a
+  heron, finch, kiwi
+  admin-certs, 
+  many instances of {:password "password"}
+
+Problems (password):  [plus many instances of admin/admin or guest/guest]
+Problems (aws-cred)
+Problems (secret)
+  
+p x mcna/EDI-tools · fl-med/pnv/README
+p x mcna/bpm-process-starter · README.md
+  . mcna/bpm-process-starter2 · README.md                                         ***** read-only *****
+  . mcna/bpm-process-starter2 · src/bpm_process_starter2/core.clj                 ***** read-only *****
+p x mcna/claim-attachment-loader · pg-libs-update.txt
+p x mcna/emerald  doc/User/CARESOURCE.md 
+p x mcna/ess-ui · ESS-UI-DOCUMENT.org
+p x mcna/finch-lameds · README.md
+p x mcna/finch-lameds · src/clj/finch_lameds/config.clj
+p x mcna/finch-server · doc/intro.md
+p x mcna/heron · bpm-processes/Heron/EncounterImport/import-encounters.clj
+p x mcna/heron · bpm-processes/Heron/Insights/GenerateComparativeAnalysisFilesForTexas/generate-comparative-analysis-files-for-texas.clj
+p x mcna/heron · bpm-processes/Heron/UpdateProviderDBs/UpdateMasterProviderFile/update-master-provider-file.clj
+p x mcna/heron · core/resources/config.edn
+p x mcna/heron-monorepo · heron-core/resources/config.edn
+p x mcna/heron-test-lein-please · resources/config.edn
+p x mcna/heron-test-lein-please · src/heron/encounter_age_statistics.clj
+p x mcna/heron-test-lein-please · src/heron/tmhp/mpf-crosswalk.xquery
+p x mcna/heron-test-repo · bpm-processes/Heron/Insights/GenerateComparativeAnalysisFilesForTexas/generate-comparative-analysis-files-for-texas.clj
+p x mcna/heron-test-repo · bpm-processes/Heron/UpdateProviderDBs/UpdateMasterProviderFile/update-master-provider-file.clj
+p x mcna/heron-test-repo · core/resources/config.edn
+p x mcna/kiwi · core/resources/config-dev.edn
+p x mcna/kiwi · resources/config-qa.edn
+p x mcna/la-encounter-reporting · setup.sh
+p x mcna/lambdawerk-config · finch/finch-dev/config.edn
+p x mcna/lambdawerk-config · prod/configuration-service.edi.healthcare/config.edn
+p x mcna/lambdawerk-config · prod/verdin.edi.healthcare/config.edn
+p x mcna/lambdawerk-config · qa/ess-qa/config.edn
+p x mcna/lambdawerk-config · qa/rabbitmq-dev/config.edn
+p x mcna/lambdawerk-config · uat/ess-uat/config.edn
+p x mcna/lambdawerk-config · uat/finch-uat/config.edn
+p x mcna/lambdawerk-config · uat/rabbitmq-uat/config.edn
+p x mcna/lambdawerk-config · uat/verdin-uat/config.edn
+p x mcna/lambdawerk-dev · leiningen/profiles.clj
+p x mcna/lambdawerk-docker · .lambdawerk-config-example.edn
+p x mcna/lambdawerk-docker · docker/images/Dockerfile-camunda
+p x mcna/marklogic · src/lambdawerk/marklogic/pump.clj
+  x mcna/mcna-devops · ansible/roles/dt-dotnet/vars/bg_Production.yml                 ***** no permissions! *****
+  x mcna/mcna-devops · ansible/roles/dt-dotnet/vars/bg_QAUpgrade.yml                  ***** no permissions! *****
+  x mcna/mcna-devops · ansible/roles/dt-dotnet/vars/bg_QAUpgrade2.yml                 ***** no permissions! *****
+  x mcna/mcna-devops · ansible/roles/dt-dotnet/vars/bg_Staging.yml                    ***** no permissions! *****
+  x mcna/mcna-devops · ansible/roles/dt-ruby/vars/uat.yml                             ***** no permissions! *****
+p x mcna/mcna-jobscheduler · jobscheduler-production.config
+p x mcna/mcna-jobscheduler · profile.sh
+p x mcna/mcna-jobscheduler · systemd/edi-healthcare-forwarder.service
+p x mcna/mcna-jobscheduler · systemd/emerald-webserver.service
+p x mcna/molina-provider-report · import-nppes.sh
+p x mcna/monorepo-test · bpm-processes/EncounterImport/import-encounters.clj
+p x mcna/monorepo-test · bpm-processes/UpdateProviderDBs/UpdateMasterProviderFile/update-master-provider-file.clj
+p x mcna/provider-network-xml · marklogic-import.sh
+p x mcna/query-log · src/clj/query_log/system.clj
+  - mcna/remittance-advice · migrate-data.sh                                          ***** noop *****
+p x mcna/s3-job-starter · src/s3_job_starter/core.clj
+p x mcna/test-package-branch · resources/processes/Heron/EncounterImport/import-encounters.clj
+p x mcna/test-package-branch · resources/processes/Heron/UpdateProviderDBs/UpdateMasterProviderFile/update-master-provider-file.clj
+p x mcna/tx-mpf · automate-tx-mpf.sh
+
+
+2025-03-19  
+  Where is queue "heron-slack-gateway" used? (slack_gateway.clj)
+
+  datadog mtg
+    Example: "EDI Emcounter Submissions" dashboard
+      sub-canvas to fold/unfold
+    chnl: edi-transfers
+    "GoAnywhere" + batch
+  explore Logs & Monitors to make nice-looking
+  name: Messages - Slack
+    different dashboards for prod, qa, etc
+    try log format (or monitors)
+
+2025-03-11  Doug: use `mulog` for clojure logs
+  hato - clojure http client
+
+2025-03-10  5-6 items in dashboard
+  listbox
+  "go-anywhere" on the "jobscheduler"
+
+2025-03-07 standup
+  went through DD docs, example, 
+
+2025-02-28
+  need one dashboard with list fields 5 "listboxes" display msg & time
+    error, warning, info (file errors)
+    5-6 groups
+    env:{prod,qa,uat,test,dev}, app:{heron,finch}
+      slack chnl names: heron, finch, kiwi, lw-monitoring-alerts, 
+        edi-file-transfers, edi-file-transfer-errors, edi-file-uploads
+      env:test is for experiments
+
+2025-02-17 clj standup
+  _ "logging slack consumer" need to modify to datadog
+
+2025-02-17 EDI-683 kickoff mtg
+  6 tags: finch-prod, heron-prod, edi-file-transers, edi-file-uploads, 
+    #logmsg-finch-prod, etc
+    #file-tx-in/out, #file-tx-in/out-error
+
+  _ me need access to slack & datadog
+  2nd step: make datadog dashboard to display
+  read datadog docs. make test messages
+    - events (not series)
+
+2025-01-27 EDI-463 kickoff mtg
+  UT response files contain rejection reason of `0`
+  >> grab status of recs that match our icn's,
+    generate TSV file, "our icn", "reason code"
+      json hashmap string
+
+
+2025-01-23 BB Mtg: New PPM Optic procedure (retroactive beginning 2025-1-1
+  Holiday:  same as before
+  PTO:      same as before
+  work hrs: must split 50/50
+    developers (me):  all work time
+      50% - MCNA Passthrough Time Reporting
+      50% - Agile Delivery
+
+2025-01-17  for PII
+  de-ident ideas
+   (hash->int          <width> <data>)
+   (hash->alpha        <width> <data>)
+   (hash->alphanum     <width> <data>)
+   (hash->hex          <width> <data>)
+
+2025-01-09 Hans/Raj/Jill mtg
+  Raj: A00 => accepted
+  Hans: take the last "accept" in all cases
+  Hans: if no accept, pick the last one (iowa icn)
+
+2025-01-03
+  If status is diff, the "accept" prevails 
+  if status is same, take "earliest one prevails"
+
+
+2024-12-11
+  verify each ICN is unique
+  get 2nd batch of ENC_RESPONSE_*.TXT files from Raj
+
+2024-12-10
+  Search Heron for logic to determine status=accepted/rejected
+    A00 => Accepted.  All other => rejected
+
+2024-12-03
+  Encounter Status - needs update also
+    MarkLogic, ESS
+    How get mods (new Plan-ICN) into DentalTrac?
+    icn, status, plan-icn => TSV file for Warren to DentalTrac (postgres db)
+    Mohan update MarkLogic?
+  __ All Response Files => TSV
+
+2024-12-02  
+  __ talk to Mohan, Raj, Hans, Jill about how to fix DentalTrak/MarkLogic re missing ICNs
+
+2024-11-14  Raj, Hans, me
+  Raj/Hans: Seems to be a resubmission
+  decision: always use the latest (by date) value of 
+    :iowa-transaction-control-number  =>  :plan-icn
+
+2024-11-07 
+  parse/save encounter response => datomic (tx-limit=500)
+    :enc-response-files->datomic--num-recs 517590
+    ---------------------------------------------------------------------------------------------------
+    Profile Stats:
+       Samples       TOTAL        MEAN      SIGMA           ID
+            1       74.258    74.257688   0.000000   :enc-response-files->datomic
+          279       39.411     0.141259   0.179537   :enc-response-fname->parsed
+          279       34.599     0.124010   0.154959   :enc-response-recs->datomic
+    ---------------------------------------------------------------------------------------------------
+
+2024-10-23
+  need to filter by iowa only
+    accepted & rejected only
+    timings of 40k commits on qa server
+
+2024-10-21
+  java17 -jar enc-response-parse-1.0.0-SNAPSHOT-standalone.jar   config-tmp.edn
+
+2024-10-16 __ set up 2pm mtg: me, Hans, Raj
+  __ look at topaz for dispatch example
+  __ need solid before/after compare working in qa
+  __ follow up on all timesheets; which are approved?
+    __ June status? clarify start data on thread
+
+  Rotated AWS access key:
+    aws-vault rotate ssm_awsmcna
+
+2024-10-07
+  github.com user: athom555-mcna-net      #sp4a
+  https://github.com/athom555-mcna-net
+
+  Had to run:
+      ~ > gh auth login
+      ? What account do you want to log into? GitHub.com
+      ? What is your preferred protocol for Git operations on this host? HTTPS
+      ? Authenticate Git with your GitHub credentials? Yes
+      ? How would you like to authenticate GitHub CLI? Login with a web browser
+
+      ! First copy your one-time code: E574-C0EB
+      Press Enter to open github.com in your browser...
+      ✓ Authentication complete.
+      - gh config set -h github.com git_protocol https
+      ✓ Configured git protocol
+      ✓ Logged in as athom555-mcna-net    (may need type password in browser)
+
+      A new release of gh is available: 2.52.0 → 2.58.0
+      To upgrade, run: brew upgrade gh
+      https://github.com/cli/cli/releases/tag/v2.58.0
+
+
+2024-10-06
+  Access to "dev-batch" server:
+    > ssh athompson@dev-batch
+
+      from William Dixon:
+      -----------------------------------------------------------------------------
+      2024-10-01  Hey good morning Alan. Hans requested access for you on the following server:
+                    i-01489edf3012e422a (dev-batch-01.idm.mcna.net)
+                  I've created your user athompson with the ssh key you provided previously
+      -----------------------------------------------------------------------------
+
+      ~/.ssh/config file:
+      -----------------------------------------------------------------------------
+      Include *.conf
+
+      # Default settings for all hosts
+      Host *
+        AddKeysToAgent yes
+        ForwardAgent yes
+        IdentityFile ~/.ssh/id_ed25519
+
+      Host heron-qa
+        ProxyCommand sh -c "aws-vault exec ssm_awsmcna --duration=14h -- aws ssm start-session --target i-0d61bf81799efb17a --region us-east-1 --document-name AWS-StartSSHSession --parameters 'portNumber=%p'"
+        User athompson_ssm
+
+      Host dev-batch
+        ProxyCommand sh -c "aws-vault exec ssm_awsmcna --duration=14h -- aws ssm start-session --target i-01489edf3012e422a --region us-east-1 --document-name AWS-StartSSHSession --parameters 'portNumber=%p'"
+        User athompson_ssm
+      -----------------------------------------------------------------------------
+
+2024-10-01
+  Hans: 'plan-icn' comes from response file, correlate with icn, update datomic
+  2021/iowa error files
+    chars 1-15? => icn
+    chars 31-47 => plan-icn
+    test using fake qa data
+  __ I need access to dev-batch-01 server
+        Joel/William Dixon
+
+2024-09-27
+  Timesheet data saved in Synergy thru today
+
+2024-09-26 EDI-289 IA ICN response file mtg (Jill, Raj, me)
+  raj:  claim-id is constant
+  need to dump all attrs for the eid
+
+2024-09-23
+  standup
+    Finished pull api unit tests. Moving to DB functions & predicates today.
+
+2024-09-19
+  standup
+    finished all and/or/or-join examples
+    translated all datomic examples from client api to peer api
+      some functions missing from client api. Not futures, 
+        able to run either :mem or files, found storage location
+    adding pull examples
+
+2024-09-16
+  standup
+    investigating datomic query for IA encounter response 
+      where lambdawerk icn is loaded but plan icn isn't (some states don't supply)
+        claims from iowa (IA) missing plan icn
+    need to define a procedure for deploying new code to production
+      process/schedule is unknown at present
+
+2024-09-13
+  standup
+    yesterday, 4 hrs mtgs! Heron Datomic investigation + planning. Query design & testing.
+      Will eventually need access to production systems to find problems, sample data, & code interactions
+        If live in artificial QA world with synthetic data, blocked from detecting, investigating & solving real problems
+
+2024-09-12
+  Doug: heron-qa has a `clojure` script to kick off a uberjar or `clj`
+  Confuence: SW-EDI -> Heron -> utilitarian datomic
+
+    heron.config=> (heron.config/datomic-uri)
+    "datomic:sql://encounters?jdbc:postgresql://postgres.qa:5432/topaz?user=datomic&password=geheim"
+
+2024-09-11 
+  __ log hours to JIRA ticket!!!
+  EDU-289 discussion mtg (Jill, Raj, Hans)
+    ICN 30000xxxxxx (mco-claim-number)
+    Plan ICN is now loaded, but wasn't before
+    => heron: core/src/heron/vendor/iowa/process_error_file.clj
+    seems to load from *.txt file but not *.xml file??? (Raj)
+      query: response file was xml, other file was TXT, but we don't have icn
+    __ need datomic query on lambdawerk icn is loaded but plan icn isn't (some states don't supply)
+        claims from iowa (IA) missing plan icn
+        date encounter created/shipped
+          need encounter file & response (eob-55290-plans-61.xml.gz encounter file)
+          ENC_RESPONSE_D_20240906_062446.TXT is response file
+      Raj: `/usr/bin/heron-core repl` on QA server "heron2.qa.lambdawerk.com"
+      IP: 10.128.4.228    instanceID: i-0d61bf81799efb17a
+ 
+
+2024-09-10 Raj Punati call
+  LoadENCResponseDFile.bpmn (Camunda file)
+    test via Camunda Cockpit
+  __ mtg Jill, Hans, Raj, me to discuss 
+
+2024-09-04 standup
+  __ common-schemas: look for 
+    emerald?  kiwi?  batched?
+    bpm-task-executor?
+
+2024-09-03 Joe Diviak mtg (new boss)
+
+2024-08-29 from Doug Kirk:
+  To get to things like Camunda UI you'll need a SOCKS5 proxy. I wrote a script I call proxy and put
+  in my ~/bin directory to do that. Beware that SSM has some sort of inactivity timeout, so it will
+  collapse your proxy when that happens.
+   
+    #!/bin/zsh
+    echo "running dynamic proxy on localhost:8081…"
+    /usr/bin/ssh -qN -D 8081 heron-qa
+
+  I didn't want to send it to the background, and didn't need a remote shell (although that could be
+  used to create activity so the timeout doesn't occur). To send it to background add -f, to make a
+  remote shell remove -N.  It's also useful for pgsql database connections for DBeaver.
+
+
+2024-08-29
+  Detail View: Time as "Free"
+    make it "All Day" + note, or just note in Teams
+  __ use "Log Work" in JIRA
+  heron -> encounters
+  finch -> enrollments
+  __ new ticket to pull apart kiwi ball of mud
+
+2024-08-28
+  I have been tasked with adding tests to ensure code quality and 
+  detect any errors that may arise. The goal is to improve production 
+  quality and expedite addition of new features to add business value.
+
+2024-08-26
+  kiwi evolution - needs
+    make & merge code changes
+      untangle highly nested code
+      modernized branch?
+      how/when merge into trunk?
+    isolate functional code from mutable state (DB, I/O files)
+      create known & repeatable starting state for testing
+    maybe Infrastructure as Code to create/use/destroy testing env
+  __ ask Jill for file description? Is it a bug?
+  __ make jira ticket & assign to me
+
+2024-08-23 
+  standup
+    been poking around S3 files for Heron QA 
+    found ERROR_REPORT x12 file, using data for tests
+      lots of crazy code (parsing-fn, weird conditionals, re-used variables, etc)
+      found what appears to be a bug already (dropping last line)
+    adding "documentation" tests, but existing source code has "untestable" parts (eg file i/o, highly nested loops)
+      will need to refactor to make more "testable" & to add more/better tests
+      how to handle that?
+
+    Monday mtg
+      Doug, Raj, Hans, me
+
+2024-08-21 
+  standup
+    had to use some PTO
+    for kiwi, we are using data from QA server (x12, etc) to guide the unit tests
+    to overcome coupling to s3, marklogic, datomic, et al, writing stubs/mocks to isolate
+      individual parts of kiwi code for testing using synthetic data & QA data
+    curiosity: `lein repl` crashes.  Q: Does MCNA network require any tricks for repl deps download?
+
+2024-08-16 Kiwi data mtg (Raj has details)
+  all local testing on QA server
+  kiwi: csv -> (local) xml -> x12
+    convert-xml-to-x12.sh
+  datomic: metadata
+    postgres: for datomic?
+  marklogic: document store
+  S3: edi-healthcare--qa--heron--encounter-submission
+    test_icas.txt
+    config.edn mentions all S3 buckets we use
+      marklogic URL & creds, etc
+  3 AWS accounts
+    mcna, edi healthcare, lambdawerk, other?
+    835-outbound/tmhp/prod/*
+    835-responses/tmhp/prod/*
+  William works with prod servers
+  ssh tunnel to heron-qa
+  access Camunda (ask Raj) qa/prod ("camunda-qa" server)
+    has a "local" version
+    Generate835Batch.bpmn
+    Camunda Modeler app (download)
+  generate-835
+  shell script
+  __ any log files?
+
+2024-08-15  (full hostname:  heron2.qa.lambdawerk.com)
+  ssh alan.thompson@heron-qa    # uses ~/.ssh/config
+    ps -Alf | grep java
+    /etc/lambdawerk/config.edn
+    /shared/heronqa
+    S3 - use cyberduck
+
+File:  ~/.ssh/config
+  -----------------------------------------------------------------------------
+  Include *.conf
+
+  # Default settings for all hosts
+  Host *
+    AddKeysToAgent yes
+    ForwardAgent yes
+    IdentityFile ~/.ssh/id_ed25519
+
+  Host heron-qa
+    ProxyCommand sh -c "aws-vault exec ssm_awsmcna --duration=14h -- aws ssm start-session --target i-0d61bf81799efb17a --region us-east-1 --document-name AWS-StartSSHSession --parameters 'portNumber=%p'"
+    User athompson_ssm
+  -----------------------------------------------------------------------------
+
+2024-08-12
+  heron2.qa.lambdawerk.com / i-0d61bf81799efb17a
+
+2024-08-09
+  __ test data.xml/element
+  __ test utils/s3-pathname?
+  __ Mtg: Doug, Raj, Hans re kiwi architecture/data
+
+Kiwi Architecture review - only for Texas
+  get encounter file from DentalTrac
+    produce ??? that goes to state
+    if accepted, collect each day, generate list (CSV?)
+    sent to kiwi, collects all encounters, 
+    generate 835 files, sent to TX
+    collect responses, look for errors. Mark bad ones in datomic
+    DentalTrac adjudicates claims -> clearinghouse -> us (a claim)
+      we get on EDI, -> database
+      then dentaltrac -> EDI
+      837d - claim file format (from DentalTrac info), includes charges (orig, allowed, etc)
+        copied to state (TX)
+      encounter = supplimental claim refers to orig (thru Heron?)
+        an adjudicated claim (maybe multiple individual claims)
+        (very) late adjustment can be merged to create a new 837 form
+      835: TX at some time decided needed more info, hands ICNs to kiwi where look up orig claim
+        filter, massage, general 835 (payment advice). Then get resp from TX, sent to kiwi.
+          Looks for ICN => has error, else marks all claims from 835 batch as accepted.
+    Camunda coordinates, files dumped to S3, lambds create SQS msgs, we subscribe
+      ex: bpm-process-starter invokes a new camunda job to invoke kiwi, etc
+    should be 2-3 entry points in kiwi where invoked with file.
+    __ look for BPM files (Business Process Mgmt)
+    admin/admin - general creds (worked for Doug on Camunda)
+      Kiwi/Generate835Batch
+  __ get QA S3 keys from Raj Punati (EDI QA)
+      or ask William Dickson for access & test
+          s3://edi-healthcare--qa--heron--encounter-submission/2024/835-outbound/tmhp/tmhp_encounter_response_icns_20240117-0_202401191530_external-835.xml
+    follow tx-icn-list.txt (queried from datomic?)
+
+2024-08-07
+  __ get multiple states samples from Raj
+        * from char 4
+
+2024-08-06
+  __ figure out expr/demo problem (project.clj ?)
+  __ practice using repl
+    __ network repl to running process
+  __ need valid examples for ST*835
+  __ need valid examples for CLP*
+  __ need valid examples for ISA*
+      -> ask Raj
+
+2024-08-05 Dhananjay Indi (new Program Manager)
+  Effort Tracker - fill out daily
+  kiwi.process-835-x12-batch
+    merge-elements & other fns
+
+2024-07-30
+  lein please to deploy?  
+    __ look at plugin in lambdawerk
+
+standup
+  made new PR with minimal changes
+  need to talk about deployment, testing with real data, log files?
+  switch to kiwi
+  __ heron/core.clj, finch, topaz, emerald has some test data?
+
+2024-07-26
+  Made branch awt-utest-01a & PR, but closed due to formatting
+  Created awt-utest-02a with minimal changes for 1 dummy test.
+  Created awt-utest-03a, adding bpm-process-starter.util.core-test
+
+2024-07-23 
+ibpm-process-starter 
+  created branch dep-upgrade-01a (from master) for deps modernization
+
+standup
+  __ finish IDEA setup
+      check via mcna self-install
+      keymaps?
+  __ podman demo
+  __ s3 mock tests (localstack)
+  __ history tests
+  __ component demo project
+  __ test sqs-listener with stubs/fake data
+
+2024-07-23 standup
+  I use https://gist.github.com/kirked/900ef28311dd15243bc29ea816ba2558
+    written for babashka ^ by Kirk, Douglas
+  
+  AWS_REGION=us-east-1 by Kirk, Douglas
+    :release {:type :service
+              :lib-dir "lib"
+              :group-id 2000
+              :user-id 2000}
+
+  {project}/rpms/SOURCES/*.service
+
+  Host github.com
+    Hostname ssh.github.com
+    Port 443
+    User dkirk
+    ProxyJump lambdawerk-jenkins
+    IdentityFile ~/.ssh/dkirk-coding-ed25519
+
+2024-07-16  Going thru "Infrastructure / UHG / Optum Laptop Guide for MCNA Users"
+  https://mcna-systems.atlassian.net/wiki/spaces/IN/pages/3005677579/Optum+Laptop+Guide+for+MCNA+Users
+
+  aws-vault add ssm_awsmcna
+    follow the prompts and add your AWS API credentials
+  aws-vault exec ssm_awsmcna --region us-east-1 -- aws sts get-caller-identity
+    to verify credentials.  Result:
+      {
+        "UserId": "AIDAYKUQUMH7E5RGR6PK7",
+        "Account": "572607717886",
+        "Arn": "arn:aws:iam::572607717886:user/athompson_ssm"
+      }
+
+  Create MFA Device:  Correct syntax is like this:
+    aws-vault exec ssm_awsmcna --no-session -- aws iam create-virtual-mfa-device \
+      --virtual-mfa-device-name  athompson_ssm  \
+      --outfile ./QRCode.png \
+      --bootstrap-method QRCodePNG
+  Result:
+    {
+        "VirtualMFADevice": {
+            "SerialNumber": "arn:aws:iam::572607717886:mfa/athompson_ssm"
+        }
+    }
+
+  Scanned MFA QR code to Google Authenticator on personal phone.
+  Verified MFA:
+    aws-vault exec ssm_awsmcna --no-session --region us-east-1 -- \
+     aws iam enable-mfa-device \
+        --user-name athompson_ssm \
+        --serial-number arn:aws:iam::572607717886:mfa/athompson_ssm  \
+        --authentication-code1 299720 \
+        --authentication-code2 301709
+
+  Update AWS config file
+    > cat ~/.aws/config
+    [profile ssm_awsmcna]
+    mfa_serial = arn:aws:iam::572607717886:mfa/athompson_ssm
+    region = us-east-1
+
+  Verify AWS MFA is working
+    > aws-vault exec ssm_awsmcna -- aws sts get-caller-identity
+    Enter MFA code for arn:aws:iam::572607717886:mfa/athompson_ssm: 448310
+    {
+        "UserId": "AIDAYKUQUMH7E5RGR6PK7",
+        "Account": "572607717886",
+        "Arn": "arn:aws:iam::572607717886:user/athompson_ssm"
+    }
+
+  To rotate API Keys
+    For security purposes you will need to rotate your API keys every 90 days.
+    You can easily do this with the following:
+      aws-vault rotate <ssm_username>
+
+    You will only be prompted for your 2FA code. Do NOT re-use the same code.
+    Wait until the code changes for each request, as shown in the example.
+    Ex:
+      > aws-vault  rotate  ssm_awsmcna
+      Rotating credentials stored for profile 'ssm_awsmcna' using a session
+            from profile 'ssm_awsmcna' (takes 10-20 seconds)
+      Creating a new access key
+      Enter MFA code for arn:aws:iam::572607717886:mfa/athompson_ssm: 209589
+      Created new access key ****************TYGS
+      Deleted 2 sessions for ssm_awsmcna
+      Deleting old access key ****************FSH3 
+      Enter MFA code for arn:aws:iam::572607717886:mfa/athompson_ssm: 327893
+      Deleted old access key ****************FSH3
+      Finished rotating access key
+
+2024-07-12
+  from Doug Kirk
+
+  Host nexus.lambdawerk.com
+    ProxyJump lambdawerk-jenkins
+    LocalForward 8443 127.0.0.1:443
+ 
+  need access Lambdawerk Jenkins
+    aws conf (ssm enabled)
+
+  Who is the "Operations team"?  (to get my aws creds)
+    William Dixon, Joel Gonzalez, Ivan ???
+
+2024-07-10
+  __ study SQS for bpm-process-starter
+  __ study localstack
+
+2024-07-09
+  nvmrepository.com
+
+2024-07-03
+  yesterday
+    working thru onboarding paperwork delayed since June 10
+    strange situation that trainings were due by June 30 even tho "1st day" was July 1
+      spent half day completing those trainings
+    some wipro onboarding stuff remaining; will have questions offline
+  today: look into code compiling/version updating? 
+    need a project to start on (Doug Kirk?)
+  __ check GHE lambdawerk access re Joel Gonzales
+
+  X12 file format (plain text) - a37d files. Also "275" files.
+    can describe claims, members, etc
+    usually sent via clearinghouse
+  "emerald" (lisp) loads
+  get "non-text" files at end (eg xray)
+  "kamunda" process flow mgmt system
+  repos:
+    claims l"oader
+    bpm-task-executer
+    bpm-process-starter (ME)
+    kiwi (ME) - describes pmt made
+      heron accpts resp from state (ok/bad)
+      could get supplemental response(s) - aka adjustment
+      a34 pmt info within 24 hours if accepted (Texas)
+  __ create our own tickets & book time against them
+  multiple claims (patient-doctor visit) are combined into a single "encounter"
+
+2024-07-02
+  need "backlog item" to charge every day (8 hours only)
+
+2024-06-11
+  rhel9 on docker
+
+2024-06-10
+
+marklogic2.prod.edi.internal server is empty and will be soon removed.
+
+ssh-keygen -t ed25519 -b 256
+
+-----------------------------------------------------------------------------
+EDI
+  Leader:           Hans Sense
+  Supervisor:       Eric Lavigne
+  Douglas Kirk:     Clojure Lead    (214.566.2851)
+  Mohan Golagani    MarkLogic Lead
+  <me>
+  Steven Rodriguez  (started 2024-07
+  Darren Kim        7/2 clojure (left?)
+  Ismael Mirabile   7/2 clojure
+  Andrew Sengal     lisp (new July)
+  Scott Robinson
+  Shazia Naaz       clojure 7/15    (510.331.0822)
+  Dhananjay Indi    new program mgr 2024-08-05
+
+Joseph Diviak     - mgr? (<= new wipro mrg from Jagdish) (Aug 2024)
+
+5:00 am mtg - Daily Standup
+  Abhinav Tiwari    - leader 
+  Jagdish Karira    - mgr?
+
+5:30 am mtg - EDI Touchbase
+  Hans Sense - leader
+
+Operations Team (for AWS, etc)
+  Joel Gonzalez
+  William Dixon
+  Ivan ???
+
+-----------------------------------------------------------------------------
+Me: athom555 / #sp4a + 5x9
+    athom555@mcna.net
+
+GH:   
+  email:    athom555@mcna.net
+  user:     athom555-mcna-net
+  pass:     kunnu1-hevkuq-rexryR => #sp4a
+
+AWS UserId:  athompson_ssm (ssm -> AWS SystemS Manager)
+
+MarkLogic:      athom555@mcna.net  #SML507a 
+      
+-----------------------------------------------------------------------------
+Entities 
+  UHC (United Health Corp)
+  Optum
+  Programmers.io
+  Wipro
+
+Acronyms
+  DT    Dental Trac
+  EDI   ???
+  MCNA  Managed Care of North America 
+
+-----------------------------------------------------------------------------
+End of Month Timesheet procedure
+  Fill out Effort Tracker & Leave Tracker in MS Office Execel sheets
+  Copy data to PPM Optics web form (submit weekly & on special days) - save/print PDF 
+  Copy data to Synergy.wipro.com (submit monthly) - save/print PDF 
+  Create & email invoice for Programmers.IO - save/print PDF 
+
