@@ -27,7 +27,7 @@
         (vals->map fname-834 fname-xml))
       (nl))
 
-    (let [c1 (str/join \space "emerald" "x12n-to-xml" fname-834 fname-xml)
+    (let [c1 (str "emerald x12n-to-xml " fname-834 \space fname-xml)
           c2 (str "ls -ldF " fname-834)]
       (spyx c1)
       (spyx c2)
