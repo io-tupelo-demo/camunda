@@ -35,10 +35,14 @@
       (spyx-pretty (misc/shell-cmd "rm -rf   /tmp/data-xml"))
       (spyx-pretty (misc/shell-cmd "mkdir -p /tmp/data-xml"))
       (spyx-pretty (misc/shell-cmd (str "mv " fname-xml " /tmp/data-xml")))
-      (spyx-pretty (misc/shell-cmd (str
-            "/usr/bin/mlcp  import  -host "  (config/ip-addr-marklogic) "
-            -port 8000  -username admin  -password admin
-            -input_file_path ./data-xml ")))
+      (let [cmd-import (str/whitespace-collapse
+                         (str/join \space
+                           ["/usr/bin/mlcp  import  -host "
+                            (config/ip-addr-marklogic)
+                            "-port 8000  -username admin  -password admi"
+                            "-input_file_path ./data-xml "]))]
+        (spyx cmd-import)
+        (spyx-pretty (misc/shell-cmd cmd-import)))
       )
 
     ; "global" output variable defined on the process, not in BPMN file
