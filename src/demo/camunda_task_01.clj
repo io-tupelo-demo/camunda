@@ -2,7 +2,7 @@
   (:use tupelo.core
         tupelo.test)
   (:require
-    [demo.tasks :as tasks]
+    [finch.tasks :as tasks]
     [schema.core :as s]
     [tupelo.schema :as tsk]
     ))

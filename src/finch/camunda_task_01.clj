@@ -1,9 +1,7 @@
 (ns finch.camunda-task-01
   (:use tupelo.core)
   (:require
-    [demo.tasks :as tasks]
-    [cognitect.aws.client.api :as aws]
-    [cognitect.aws.credentials :as credentials]
+    [finch.tasks :as tasks]
     [finch.aws-api :as aws-api]
     [finch.config :as config]
     [schema.core :as s]
